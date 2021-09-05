@@ -4,6 +4,7 @@ import operationIndex from './modules/operationIndex';
 
 import sponsorManage from './modules/sponsorManage';
 import fictitiousGift from './modules/fictitiousGift';
+import freeGoods from './modules/freeGoods';
 
 import system from './modules/system';
 import deparManage from './modules/deparManage';
@@ -18,6 +19,7 @@ export default [
     operationIndex,
     sponsorManage,
     fictitiousGift,
+    freeGoods,
     deparManage,
     system,
     roleAuth,

@@ -121,7 +121,7 @@ export default {
          * @description 更新页面当前项
          * @param {Object} param { params, query, fullPath } 路由信息
          */
-        currentUpdate ({ state, commit, dispatch }, { params, query, fullPath, meta, keepMeta = false } ) {
+        currentUpdate ({ state, commit, dispatch }, { params, query, fullPath, meta, keepMeta = false }) {
             return new Promise(async resolve => {
                 setTimeout(async () => {
                     // 更新当前项

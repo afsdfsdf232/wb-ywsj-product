@@ -54,8 +54,8 @@
                 console.log(res)
             }) */
             generatorList({
-                page:1,
-                limit:10,
+                page: 1,
+                limit: 10,
                 order: 'order'
             }).then(res => {
                 console.log(res)

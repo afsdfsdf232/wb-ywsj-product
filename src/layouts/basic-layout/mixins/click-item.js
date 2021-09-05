@@ -6,7 +6,7 @@ export default {
         ...mapState('admin/layout', [
             'menuSiderReload',
             'menuHeaderReload'
-        ]),
+        ])
     },
     methods: {
         handleClick (path, type = 'sider') {
@@ -15,7 +15,6 @@ export default {
                 if (type === 'sider' && this.menuSiderReload) this.handleReload();
                 else if (type === 'header' && this.menuHeaderReload) this.handleReload();
             }
-
         },
         handleReload () {
             const $layout = findComponentUpward(this, 'BasicLayout');

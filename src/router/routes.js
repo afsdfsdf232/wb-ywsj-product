@@ -7,6 +7,7 @@ import roleAuthRouter from './modules/roleAuthRouter';
 import systemLogRouter from './modules/systemLogRouter';
 import deparManage from './modules/deparManage';
 import fictitiousGift from './modules/fictitiousGift';
+import freeGoods from './modules/freeGoods';
 import BasicLayout from '@/layouts/basic-layout';
 
 /**
@@ -70,7 +71,8 @@ const frameIn = [
     roleAuthRouter,
     systemLogRouter,
     deparManage,
-    fictitiousGift
+    fictitiousGift,
+    freeGoods
 ];
 
 /**

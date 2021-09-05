@@ -20,7 +20,7 @@ date.formatDate = function (date, fmt) {
  * @param showY 是否显示年份
  * @param showBefore 是否返回 xx后
  * */
-date.getDateDiff = function getDateDiff(dateStr, showM, showY, showBefore = true) {
+date.getDateDiff = function getDateDiff (dateStr, showM, showY, showBefore = true) {
     let publishTime;
     if (+dateStr) {
         publishTime = (new Date(dateStr).getTime()) / 1000;
@@ -43,7 +43,7 @@ date.getDateDiff = function getDateDiff(dateStr, showM, showY, showBefore = true
         H = date.getHours(),
         m = date.getMinutes();
 
-    //小于10的在前面补0
+    // 小于10的在前面补0
     M = M < 10 ? '0' + M : M;
     D = D < 10 ? '0' + D : D;
     H = H < 10 ? '0' + H : H;
@@ -95,19 +95,18 @@ date.getDateDiff = function getDateDiff(dateStr, showM, showY, showBefore = true
 /**
  * 格式化日期
  **/
-Date.prototype.Format = function(fmt) {
+Date.prototype.Format = function (fmt) {
     var o = {
-        'M+': this.getMonth() + 1, //月份
-        'd+': this.getDate(), //日
-        'h+': this.getHours(), //小时
-        'm+': this.getMinutes(), //分
-        's+': this.getSeconds(), //秒
-        'q+': Math.floor((this.getMonth() + 3) / 3), //季度
-        'S': this.getMilliseconds() //毫秒
+        'M+': this.getMonth() + 1, // 月份
+        'd+': this.getDate(), // 日
+        'h+': this.getHours(), // 小时
+        'm+': this.getMinutes(), // 分
+        's+': this.getSeconds(), // 秒
+        'q+': Math.floor((this.getMonth() + 3) / 3), // 季度
+        'S': this.getMilliseconds() // 毫秒
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
-    for (var k in o)
-        if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+    for (var k in o) { if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length))); }
     return fmt;
 };
 
