@@ -1,0 +1,174 @@
+.page-account{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+
+    &-container{
+        flex: 1;
+        padding: 32px 0;
+        text-align: center;
+        width: 880px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        &-result{
+            width: 100%;
+        }
+
+        @media screen and (max-width: @screen-sm) {
+            width: 95%;
+        }
+    }
+    .login-img-icon {
+        background-image: url('../../assets/images/login-img.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100%;
+        width: 400px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    .login-name {
+        padding-bottom: 20px;
+        padding-top: 10px;
+        font-size: 22px;
+        // background: linear-gradient(0deg, #B351FF 0%, #3951FF 100%);
+        // background-image:-webkit-linear-gradient(bottom,#B351FF,#3951FF); 
+        color: #439EFB;
+    }
+    .captcha-name {
+        // background: linear-gradient(0deg, #B351FF 0%, #3951FF 100%);
+        font-size: 20px;
+        display: inline-block;
+        width: 70px;
+        text-align: center;
+        color: #439EFB;
+        /* background-image:-webkit-linear-gradient(bottom,#B351FF,#3951FF); 
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent; */
+    }
+    .login-btns .ivu-btn {
+        
+        // background: linear-gradient(0deg, #B351FF, #3951FF);
+        background-color: #439EFB;
+        opacity: 0.8;
+    }
+    .img-line {
+        position: relative;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 44px;
+            height: 6px;
+            background-color: #fff;
+        }
+    }
+    &-tabs{
+        .ivu-tabs-bar{
+            border-bottom: none;
+        }
+        .ivu-tabs-nav-scroll{
+            text-align: center;
+        }
+        .ivu-tabs-nav{
+            display: inline-block;
+            float: none;
+        }
+    }
+
+    &-top{
+        padding: 32px 0;
+        &-logo{
+            img{
+                height: 75px;
+            }
+        }
+        &-desc{
+            font-size: 40px;
+            color: #fff;
+            text-align: center;
+        }
+    }
+
+    &-auto-login{
+        margin-bottom: 24px;
+        text-align: left;
+        a{
+            float: right;
+        }
+    }
+
+    &-other{
+        margin: 24px 0;
+        text-align: left;
+        span{
+            font-size: @font-size-base;
+        }
+        img{
+            width: 24px;
+            margin-left: 16px;
+            cursor: pointer;
+            vertical-align: middle;
+            opacity: 0.7;
+            transition: all @transition-time @ease-in-out;
+            &:hover{
+                opacity: 1;
+            }
+        }
+    }
+
+    .ivu-poptip, .ivu-poptip-rel{
+        display: block;
+    }
+
+    &-register{
+        float: right;
+        &-tip{
+            text-align: left;
+            &-low{
+                color: @error-color;
+            }
+            &-medium{
+                color: @warning-color;
+            }
+            &-strong{
+                color: @success-color;
+            }
+            &-title{
+                font-size: @font-size-base;
+            }
+            &-desc{
+                white-space: initial;
+                font-size: @font-size-base;
+                margin-top: 6px;
+            }
+        }
+    }
+    &-to-login{
+        text-align: center;
+        margin-top: 16px;
+    }
+    &-header{
+        text-align: right;
+        position: fixed;
+        top: 16px;
+        right: 24px;
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .page-account {
+        background-image: url('../../assets/images/loginBg.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100%;
+    }
+
+    .page-account-container {
+        padding: 32px 0 24px 0;
+    }
+}
