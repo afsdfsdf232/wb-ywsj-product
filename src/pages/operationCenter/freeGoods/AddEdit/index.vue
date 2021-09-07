@@ -3,13 +3,14 @@
     <goods-header title="新建活动">
       <template #right>
         <Button type="primary">保存</Button>
-        <Button type="primary m16">发布</Button>
-        <Button type="">返回</Button>
+        <Button class="m16" type="primary">发布</Button>
+        <Button >返回</Button>
       </template>
     </goods-header>
     <div class="content">
       <!-- 基础信息 -->
       <div class="basic-content">
+        <div class="tag">基础信息</div>
         <Form
           ref="formValidate"
           :model="formValidate"
@@ -18,18 +19,36 @@
         >
           <FormItem label="活动名称" prop="name">
             <Input
+              style="width: 450px"
               v-model="formValidate.name"
               placeholder="请输入活动名称"
             ></Input>
           </FormItem>
-          <FormItem label="Date">
+          <FormItem label="活动时间" prop="date">
             <DatePicker
-              type="daterange"
-              :start-date="new Date(1991, 4, 14)"
-              placement="bottom-end"
-              placeholder="Select date"
-              style="width: 200px"
+              type="datetimerange"
+              @on-change="changeDate"
+              @on-clear="clearTime"
+              format="yyyy-MM-dd HH:mm"
+              v-model="formValidate.date"
+              placeholder="请选择活动时间"
+              style="width: 450px"
             ></DatePicker>
+          </FormItem>
+          <FormItem label="关联活动" prop="activity">
+            <Select
+              v-model="formValidate.activity"
+              placeholder="请选择活动"
+              clearable
+              style="width: 450px"
+            >
+              <Option
+                v-for="item in activityList"
+                :value="item.value"
+                :key="item.value"
+                >{{ item.label }}</Option
+              >
+            </Select>
           </FormItem>
         </Form>
       </div>
@@ -40,92 +59,56 @@
 
 <script>
 import Header from "./../com/Header";
+const validate = (rule, value, callback) => {
+  if (Array.isArray(value)) {
+    if (value[0].trim() && value[1].trim()) {
+      return callback();
+    }
+    return callback(rule.message);
+  }
+  return callback(rule.message);
+};
 export default {
   name: "addedit",
   data() {
     return {
+      activityList: [
+        {
+          value: "New York",
+          label: "New York",
+        },
+        {
+          value: "London",
+          label: "London",
+        },
+      ],
       formValidate: {
         name: "",
-        mail: "",
-        city: "",
-        gender: "",
-        interest: [],
         date: "",
-        time: "",
-        desc: "",
+        activity: "",
       },
       ruleValidate: {
         name: [
           {
             required: true,
-            message: "The name cannot be empty",
+            message: "请输入活动名称",
             trigger: "blur",
-          },
-        ],
-        mail: [
-          {
-            required: true,
-            message: "Mailbox cannot be empty",
-            trigger: "blur",
-          },
-          { type: "email", message: "Incorrect email format", trigger: "blur" },
-        ],
-        city: [
-          {
-            required: true,
-            message: "Please select the city",
-            trigger: "change",
-          },
-        ],
-        gender: [
-          {
-            required: true,
-            message: "Please select gender",
-            trigger: "change",
-          },
-        ],
-        interest: [
-          {
-            required: true,
-            type: "array",
-            min: 1,
-            message: "Choose at least one hobby",
-            trigger: "change",
-          },
-          {
-            type: "array",
-            max: 2,
-            message: "Choose two hobbies at best",
-            trigger: "change",
           },
         ],
         date: [
           {
             required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change",
+            type: "array",
+            message: "请选择活动时间",
+            trigger: ["change", "blur"],
+            validator: validate,
           },
         ],
-        time: [
+        activity: [
           {
             required: true,
-            type: "string",
-            message: "Please select time",
+            message: "请选择关联活动",
             trigger: "change",
-          },
-        ],
-        desc: [
-          {
-            required: true,
-            message: "Please enter a personal introduction",
-            trigger: "blur",
-          },
-          {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
-            trigger: "blur",
           },
         ],
       },
@@ -147,6 +130,12 @@ export default {
     handleReset(name) {
       this.$refs[name].resetFields();
     },
+    changeDate(event) {
+      // this.formValidate.date = event;
+    },
+    clearTime() {
+      // this.formValidate.date = [];
+    },
   },
 };
 </script>
@@ -155,6 +144,39 @@ export default {
 .container {
   .m16 {
     margin: 0 16px;
+  }
+  .content {
+    box-sizing: border-box;
+    padding: 32px;
+    background-color: #fff;
+    .basic-content {
+      box-sizing: border-box;
+      padding: 0 32px;
+    }
+  }
+  .tag {
+    position: relative;
+    left: -32px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    width: 114px;
+    line-height: 48px;
+    text-align: center;
+    background-color: #2e8cf0;
+    color: #fff;
+    font-weight: 700;
+    &::before {
+      position: absolute;
+      right: -48px;
+      content: "";
+      display: block;
+      width: 0px;
+      height: 0px;
+      border-bottom: 24px solid transparent;
+      border-top: 24px solid transparent;
+      border-left: 24px solid #2e8cf0;
+      border-right: 24px solid transparent;
+    }
   }
 }
 </style>
