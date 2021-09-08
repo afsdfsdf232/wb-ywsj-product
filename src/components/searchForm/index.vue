@@ -3,11 +3,12 @@
         <div class="flex m-r10 " v-for="(item, index) in queryFieids" :key="index">
             <div class="lable">{{item.label}}：</div>
             <div class="label-input flex-1" v-if="item.type === 'Input'">
-                <Input  type="text" v-model="search[item.prop]" placeholder=""></Input>
+                <Input  type="text" v-model="search[item.prop]" :placeholder="item.placeholder || ''"></Input>
             </div>
             <div class="label-input flex-1" v-if="item.type === 'Select'">
                 <Select v-model="search[item.prop]"
                     clearable  filterable transfer
+                    :placeholder="item.placeholder || ''"
                     :multiple="item.multiple"
                  style="width:140px">
                     <Option v-for="ite in item.option" :value="ite.id || ''" :key="ite.id">{{ ite.label }}</Option>
@@ -22,7 +23,7 @@
         </div>
         <slot></slot>
         <div class="p-l20  flex flex-1">
-            <Button class="m-l10" v-for="(item,index) in formBtn" :key="index" :type="item.type ? item.type : 'default'" @click="item.handle()">{{item.label}}</Button>
+            <Button class="m-l10" v-for="(item,index) in formBtn" :key="index" :type="item.type ? item.type : 'default'" @click="handelClick(item)">{{item.label}}</Button>
         </div>
         <!-- 尾部描述文字 -->
         <slot name="end"></slot>
@@ -53,7 +54,11 @@
         watch: {
         },
         // 方法集合
-        methods: {
+        methods: { // item.handle()
+        handelClick(item){
+           typeof item.handle === 'function' && item.handle();
+           this.$emit('on-click',this.search,item)
+        }
         },
         // 生命周期 - 挂载完成（可以访问DOM元素）
         mounted () {

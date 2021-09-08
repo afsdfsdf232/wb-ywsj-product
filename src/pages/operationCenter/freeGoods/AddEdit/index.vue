@@ -27,8 +27,6 @@
           <FormItem label="活动时间" prop="date">
             <DatePicker
               type="datetimerange"
-              @on-change="changeDate"
-              @on-clear="clearTime"
               format="yyyy-MM-dd HH:mm"
               v-model="formValidate.date"
               placeholder="请选择活动时间"
@@ -69,7 +67,7 @@
               <div class="w60 br-right">序号</div>
               <div class="w283 br-right">商品名称</div>
               <div class="w249 br-right">SKU</div>
-              <div class="w300 br-right" style="height:100px">111</div>
+              <div class="w300 br-right" style="height: 100px">111</div>
               <div class="w236 br-right">任务开始时间</div>
               <div class="w236 br-right">任务结束时间</div>
               <div class="w200">操作</div>
@@ -84,102 +82,182 @@
     <!-- 选择商品弹窗 -->
     <Modal
       v-model="addGoodsModal.show"
-      title=""
       @on-ok="addGoodsOk"
+      width="68%"
+      :mask-closable="false"
+      title="选择商品"
       @on-cancel="addGoodsCancel"
     >
-      <Tabs value="name1">
-        <Tab-pane label="商城商品" name="name1">标签一的内容</Tab-pane>
-        <Tab-pane label="招商商品" name="name2">标签二的内容</Tab-pane>
-      </Tabs>
+      <div class="p-lr30">
+        <Tabs value="name1">
+          <Tab-pane label="商城商品" name="name1">
+            <search-form
+              :queryFieids="search.queryFieids"
+              :search="search.search"
+              :formBtn="search.formBtn"
+              @on-click="searchFilter"
+            ></search-form>
+            <div class="goods-container">
+              <div class="goods-left">
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+              </div>
+              <div class="goods-right">
+                 <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+                <div class="goods-item"></div>
+              </div>
+            </div>
+          </Tab-pane>
+          <Tab-pane label="招商商品" name="name2">
+            <search-form
+              :queryFieids="search.queryFieids"
+              :search="search.search"
+              :formBtn="search.formBtn"
+              @on-click="searchFilter"
+            ></search-form>
+          </Tab-pane>
+        </Tabs>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
-    import Header from "./../com/Header";
-    const validate = (rule, value, callback) => {
-        if (Array.isArray(value)) {
-            if (value[0].trim() && value[1].trim()) {
-                return callback();
-            }
-            return callback(rule.message);
-        }
-        return callback(rule.message);
-    };
-    export default {
-        name: "addedit",
-        data () {
-            return {
-                addGoodsModal: {
-                    show: false
-                },
-                activityList: [
-                    {
-                        value: "New York",
-                        label: "New York"
-                    },
-                    {
-                        value: "London",
-                        label: "London"
-                    }
-                ],
-                formValidate: {
-                    name: "",
-                    date: "",
-                    activity: ""
-                },
-                ruleValidate: {
-                    name: [
-                        {
-                            required: true,
-                            message: "请输入活动名称",
-                            trigger: "blur"
-                        }
-                    ],
-                    date: [
-                        {
-                            required: true,
-                            type: "array",
-                            message: "请选择活动时间",
-                            trigger: ["change", "blur"],
-                            validator: validate
-                        }
-                    ],
-                    activity: [
-                        {
-                            required: true,
-                            message: "请选择关联活动",
-                            trigger: "change"
-                        }
-                    ]
-                }
-            };
+import Header from "./../com/Header";
+const typeData = [];
+const validate = (rule, value, callback) => {
+  if (Array.isArray(value)) {
+    if (value[0].trim() && value[1].trim()) {
+      return callback();
+    }
+    return callback(rule.message);
+  }
+  return callback(rule.message);
+};
+export default {
+  name: "addedit",
+  data() {
+    let _this = this;
+    return {
+      addGoodsModal: {
+        show: false,
+      },
+      search: {
+        formBtn: [
+          // 搜索框按钮
+          {
+            label: "查询",
+            class: "normal-btn",
+            btnType: "search",
+            type: "primary",
+          },
+          { label: "重置", btnType: "reset", class: "normal-btn" },
+        ],
+        queryFieids: [
+          // 搜索框字段
+          { type: "Select", label: "商品分类",placeholder:"请选择", prop: "type", option: typeData },
+          { type: "Input", label: "搜索", placeholder:"输入关键字", prop: "name" },
+        ],
+        search: {
+          // 搜索值
+          name: "", // 姓名
+          type: "", // 类型
         },
-        components: {
-            "goods-header": Header
+      },
+      filterLeft: {
+        name: "",
+        type: "",
+      },
+      filterRight: {
+        name: "",
+        type: "",
+      },
+      activityList: [
+        {
+          value: "New York",
+          label: "New York",
         },
-        methods: {
-            handleSubmit (name) {
-                this.$refs[name].validate(valid => {
-                    if (valid) {
-                        this.$Message.success("Success!");
-                    } else {
-                        this.$Message.error("Fail!");
-                    }
-                });
-            },
-            handleReset (name) {
-                this.$refs[name].resetFields();
-            },
-            addGoods () {
-                // 打开弹窗选择商品
-                this.addGoodsModal.show = true;
-            },
-            addGoodsOk () {},
-            addGoodsCancel () {}
-        }
+        {
+          value: "London",
+          label: "London",
+        },
+      ],
+      formValidate: {
+        name: "",
+        date: "",
+        activity: "",
+      },
+      ruleValidate: {
+        name: [
+          {
+            required: true,
+            message: "请输入活动名称",
+            trigger: "blur",
+          },
+        ],
+        date: [
+          {
+            required: true,
+            type: "array",
+            message: "请选择活动时间",
+            trigger: ["change", "blur"],
+            validator: validate,
+          },
+        ],
+        activity: [
+          {
+            required: true,
+            message: "请选择关联活动",
+            trigger: "change",
+          },
+        ],
+      },
     };
+  },
+  components: {
+    "goods-header": Header,
+  },
+  methods: {
+    getSearchRest() {},
+    searchFilter(...data) {
+      console.log("data:", ...data);
+    },
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$Message.success("Success!");
+        } else {
+          this.$Message.error("Fail!");
+        }
+      });
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+    },
+    addGoods() {
+      // 打开弹窗选择商品
+      this.addGoodsModal.show = true;
+    },
+    addGoodsOk() {},
+    addGoodsCancel() {},
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -306,6 +384,26 @@
       width: 10px;
       transform: translateY(-50%);
       background-color: #2e8cf0;
+    }
+  }
+}
+.goods-container {
+  display: flex;
+  .goods-left,
+  .goods-right {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 500px;
+    box-sizing: border-box;
+    padding: 32px;
+    overflow-y: auto;
+    background-color: #F8F8F8;
+    .goods-item {
+      width: 250px;
+      height: 115px;
+      margin: 0 8px 8px 0;
+      background-color: #fff;
     }
   }
 }
