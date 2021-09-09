@@ -99,28 +99,334 @@
             ></search-form>
             <div class="goods-container">
               <div class="goods-left">
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
+                <CheckboxGroup v-model="fruit" @on-change="changeProduct">
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                </CheckboxGroup>
               </div>
               <div class="goods-right">
-                 <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
-                <div class="goods-item"></div>
+                <CheckboxGroup v-model="fruit">
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                  <Checkbox label="香蕉">
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img
+                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="goods-info">
+                        <Icon type="md-medical" />
+                        <p class="goods-name">
+                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                        </p>
+                        <p class="goods-gg">50g/五香</p>
+                        <p class="goods-price">￥ 500</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                </CheckboxGroup>
               </div>
             </div>
           </Tab-pane>
@@ -135,12 +441,200 @@
         </Tabs>
       </div>
     </Modal>
+    <!-- 规则设置弹窗 Rule settings-->
+    <Modal
+      v-model="ruleSettingsModal.show"
+      @on-ok="addGoodsOk"
+      width="50%"
+      :mask-closable="false"
+      title="规则设置"
+      @on-cancel="addGoodsCancel"
+    >
+      <div class="p-lr30">
+        <div class="rule-list">
+          <p class="title">领取规则：</p>
+          <RadioGroup v-model="ruleSettingsModal.ruleValue" vertical>
+            <Radio :label="1">
+              <span>为选手选票</span>
+            </Radio>
+            <Radio :label="2">
+              <Icon type="social-android"></Icon>
+              <span>邀请用户</span>
+            </Radio>
+            <Radio :label="3">
+              <span>既邀请用户，且用户需投票</span>
+            </Radio>
+          </RadioGroup>
+        </div>
+        <div class="rule-input">
+          <div v-if="ruleSettingsModal.ruleValue === 1">
+            <span>通过链接为选手拉</span>
+            <Input
+              style="margin: 10px; width: 200px"
+              placeholder="请输入票数"
+            />
+            <span>票</span>
+          </div>
+          <div v-if="ruleSettingsModal.ruleValue === 2">
+            <span>邀请用户</span>
+            <Input
+              style="margin: 10px; width: 200px"
+              placeholder="请输入人数"
+            />
+            <span>个</span>
+          </div>
+          <div v-if="ruleSettingsModal.ruleValue === 3">
+            <span>通过链接为选手拉</span>
+            <Input
+              style="margin: 10px; width: 200px"
+              placeholder="请输入票数"
+            />
+            <span>票，</span>
+            <span>且邀请用户</span>
+            <Input
+              style="margin: 10px; width: 200px"
+              placeholder="请输入人数"
+            />
+            <span>个</span>
+          </div>
+        </div>
+        <div class="rule-content">
+          <p class="title">活动规则</p>
+          <quill-editor
+            style="height: 300px"
+            :content="content"
+            :options="editorOption"
+            v-model="tinymceHtml"
+          ></quill-editor>
+        </div>
+      </div>
+    </Modal>
+    <!-- 广告设置弹窗 Advertising settings -->
+    <Modal
+      v-model="advertisingSettingsModal.show"
+      @on-ok="addGoodsOk"
+      width="50%"
+      :mask-closable="false"
+      title="规则设置"
+      @on-cancel="addGoodsCancel"
+    >
+      <div class="p-lr30">
+        <div class="advertising-content">
+          <div class="advertising-left">
+            <p
+              @click="advertisingSettingsModal.state = 1"
+              :class="{ 'active-p': advertisingSettingsModal.state === 1 }"
+            >
+              投票闪频广告
+            </p>
+            <p
+              @click="advertisingSettingsModal.state = 2"
+              :class="{ 'active-p': advertisingSettingsModal.state === 2 }"
+            >
+              选手继续投票页弹框广告
+            </p>
+            <p
+              @click="advertisingSettingsModal.state = 3"
+              :class="{ 'active-p': advertisingSettingsModal.state === 3 }"
+            >
+              分享链接
+            </p>
+          </div>
+          <div class="advertising-right">
+            <div
+              v-if="
+                advertisingSettingsModal.state === 1 ||
+                advertisingSettingsModal.state === 3
+              "
+            >
+              <p>图片</p>
+              <div>
+                <Upload
+                  ref="upload"
+                  :show-upload-list="false"
+                  :default-file-list="defaultList"
+                  :on-success="handleSuccess"
+                  :format="['jpg', 'jpeg', 'png']"
+                  :max-size="2048"
+                  :on-format-error="handleFormatError"
+                  :on-exceeded-size="handleMaxSize"
+                  :before-upload="handleBeforeUpload"
+                  multiple
+                  type="drag"
+                  action="//jsonplaceholder.typicode.com/posts/"
+                  style="display: inline-block; width: 200px; margin: 16px 0"
+                >
+                  <div style="width: 200px; height: 200px; line-height: 200px">
+                    <Icon size="20" type="md-add" />
+                    <p>上传图片</p>
+                  </div>
+                </Upload>
+              </div>
+              <p>注意：上传图片尺寸为750X1334px，大小不能超过2M</p>
+              <div class="input-content" style="margin: 20px 0">
+                <div>
+                  <span>链接：</span>
+                  <Input placeholder="请输入..." style="width: 400px" />
+                </div>
+              </div>
+            </div>
+            <div v-if="advertisingSettingsModal.state === 2">
+              <p>logo</p>
+              <div>
+                <Upload
+                  ref="upload"
+                  :show-upload-list="false"
+                  :default-file-list="defaultList"
+                  :on-success="handleSuccess"
+                  :format="['jpg', 'jpeg', 'png']"
+                  :max-size="2048"
+                  :on-format-error="handleFormatError"
+                  :on-exceeded-size="handleMaxSize"
+                  :before-upload="handleBeforeUpload"
+                  multiple
+                  type="drag"
+                  action="//jsonplaceholder.typicode.com/posts/"
+                  style="display: inline-block; width: 200px; margin: 16px 0"
+                >
+                  <div style="width: 200px; height: 200px; line-height: 200px">
+                    <Icon size="20" type="md-add" />
+                    <p>上传图片</p>
+                  </div>
+                </Upload>
+              </div>
+              <div class="input-content" style="margin: 20px 0">
+                <div>
+                  <span>标题：</span>
+                  <Input placeholder="请输入..." style="width: 400px" />
+                </div>
+              </div>
+              <div class="input-content" style="margin: 20px 0">
+                <div>
+                  <span>内容：</span>
+                  <Input
+                    style="width: 400px"
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 5 }"
+                    placeholder="请输入..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import Header from "./../com/Header";
 const typeData = [];
+import { quillEditor } from "vue-quill-editor";
+import { addQuillTitle } from "./quill-title";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
 const validate = (rule, value, callback) => {
   if (Array.isArray(value)) {
     if (value[0].trim() && value[1].trim()) {
@@ -155,8 +649,23 @@ export default {
   data() {
     let _this = this;
     return {
+      fruit: [],
       addGoodsModal: {
         show: false,
+      },
+      tinymceHtml: "<h1>hahha</h1>",
+      content: "<h1>hahha</h1>",
+      editorOption: {
+        height: 600,
+      },
+      ruleSettingsModal: {
+        show: false,
+        ruleValue: 1,
+      },
+      advertisingSettingsModal: {
+        // 广告设置弹窗
+        show: true,
+        state: 1,
       },
       search: {
         formBtn: [
@@ -171,8 +680,19 @@ export default {
         ],
         queryFieids: [
           // 搜索框字段
-          { type: "Select", label: "商品分类",placeholder:"请选择", prop: "type", option: typeData },
-          { type: "Input", label: "搜索", placeholder:"输入关键字", prop: "name" },
+          {
+            type: "Select",
+            label: "商品分类",
+            placeholder: "请选择",
+            prop: "type",
+            option: typeData,
+          },
+          {
+            type: "Input",
+            label: "搜索",
+            placeholder: "输入关键字",
+            prop: "name",
+          },
         ],
         search: {
           // 搜索值
@@ -231,7 +751,11 @@ export default {
     };
   },
   components: {
+    "quill-editor": quillEditor,
     "goods-header": Header,
+  },
+  mounted() {
+    addQuillTitle();
   },
   methods: {
     getSearchRest() {},
@@ -254,6 +778,9 @@ export default {
       // 打开弹窗选择商品
       this.addGoodsModal.show = true;
     },
+    changeProduct(...args) {
+      console.log("args:", args);
+    },
     addGoodsOk() {},
     addGoodsCancel() {},
   },
@@ -262,6 +789,20 @@ export default {
 
 <style lang="less" scoped>
 // 1356
+.ivu-checkbox-wrapper {
+  width: 250px;
+  height: 133px;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 0 10px 10px 0;
+  position: relative;
+  background-color: #fff;
+}
+::v-deep .ivu-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
 .container {
   .m16 {
     margin: 0 16px;
@@ -398,13 +939,68 @@ export default {
     box-sizing: border-box;
     padding: 32px;
     overflow-y: auto;
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
     .goods-item {
-      width: 250px;
-      height: 115px;
-      margin: 0 8px 8px 0;
+      display: flex;
+      align-items: center;
       background-color: #fff;
+      .goods-img img {
+        width: 92px;
+        height: 92px;
+      }
+      .goods-info {
+        margin-top: 18px;
+        margin-left: 16px;
+        .goods-name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+        .goods-gg {
+          color: rgb(153, 204, 51);
+        }
+        .goods-price {
+          color: rgb(255, 78, 78);
+        }
+      }
     }
+  }
+}
+.rule-list {
+  margin: 20px 0;
+  .title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+}
+.rule-content {
+  height: 400px;
+  .title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+}
+.advertising-content {
+  display: flex;
+  height: 550px;
+  .advertising-left {
+    border: 1px solid #e4e4e4;
+    width: 201px;
+    p {
+      line-height: 48px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+    .active-p {
+      background-color: #f3f9ff;
+    }
+  }
+  .advertising-right {
+    box-sizing: border-box;
+    padding: 20px;
   }
 }
 </style>
