@@ -54,7 +54,7 @@
         <div class="p-lr30">
           <div class="rule-list">
             <p class="title">领取规则：</p>
-            <RadioGroup v-model="ruleInfo.ruleDefId" vertical>
+            <RadioGroup @on-change="changeRule" v-model="ruleInfo.ruleDefId" vertical>
               <Radio :label="1">
                 <span>为选手选票</span>
               </Radio>
@@ -291,6 +291,11 @@ export default {
     this.getMFActivityTaskDetail();
   },
   methods: {
+    changeRule(){
+      this.ruleInfo.eachNum = ''
+      this.ruleInfo.voteNum = ''
+      this.ruleInfo.ruleName = ''
+    },
     async updateMFActivityTask() {
       // 保存基础信息
       const res = await updateMFActivityTask(this.baseInfo);
