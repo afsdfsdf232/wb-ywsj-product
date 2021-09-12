@@ -32,6 +32,30 @@ module.exports = {
                 pathRewrite: {   // 重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
                     '^/api': ''
                 }
+            },
+            '/freeApi': {
+                target: 'http://7haiuv.natappfree.cc/', // 免费领取活动模块服务器地址
+                ws: true,  // 代理websockets
+                changeOrigin: true, // 虚拟的站点需要更管origin
+                pathRewrite: {   // 重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
+                    '^/freeApi': ''
+                }
+            },
+            '/jujosoApi': {
+                target: 'https://api.javamall.com.cn/', // 免费领取活动模块服务器地址
+                ws: true,  // 代理websockets
+                changeOrigin: true, // 虚拟的站点需要更管origin
+                pathRewrite: {   // 重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
+                    '^/jujosoApi': ''
+                }
+            },
+            '/uploadApi': {
+                target: 'http://116.62.184.178:8085/', // 免费领取活动模块服务器地址
+                ws: true,  // 代理websockets
+                changeOrigin: true, // 虚拟的站点需要更管origin
+                pathRewrite: {   // 重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
+                    '^/uploadApi': ''
+                }
             }
         }
     },

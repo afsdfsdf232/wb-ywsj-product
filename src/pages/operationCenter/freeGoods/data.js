@@ -7,23 +7,23 @@ export const tableHeaders = {
             title: "序号"
         },
         {
-            key: "name",
+            key: "activityTitle",
             align: "center",
             title: "活动名称"
 
         },
         {
-            key: "gp",
+            key: "parentActivityTitle",
             align: "center",
             title: "关联投票活动"
         },
         {
-            key: "start",
+            key: "activityBeginDt",
             align: "center",
             title: "开始时间"
         },
         {
-            key: "end",
+            key: "activityEndDt",
             align: "center",
             title: "结束时间"
         },
@@ -42,28 +42,28 @@ export const tableHeaders = {
             title: "序号"
         },
         {
-            key: "name",
+            key: "activityTitle",
             align: "center",
             title: "活动名称"
 
         },
         {
-            key: "gp",
+            key: "parentActivityTitle",
             align: "center",
             title: "关联投票活动"
         },
         {
-            key: "start",
+            key: "activityBeginDt",
             align: "center",
             title: "开始时间"
         },
         {
-            key: "end",
+            key: "activityEndDt",
             align: "center",
             title: "结束时间"
         },
         {
-            key: "stop",
+            key: "stopDt",
             align: "center",
             title: "停止时间"
         }

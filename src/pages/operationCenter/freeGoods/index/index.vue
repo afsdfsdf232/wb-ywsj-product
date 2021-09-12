@@ -1,10 +1,11 @@
 <template>
   <div class="container">
+    <router-view></router-view>
     <!-- 列表页面 -->
-    <goods-list v-show="routeCop === 1" />
+    <!-- <goods-list @change-route="changeRoute" v-show="routeCop === 1" /> -->
     <!-- 详情页面 -->
     <!-- 商品活动新增、编辑页面 -->
-    <goods-add-edit v-show="routeCop === 2" />
+    <!-- <goods-add-edit @change-route="changeRoute" v-show="routeCop === 2" /> -->
   </div>
 </template>
 
@@ -15,7 +16,7 @@ export default {
   name: "goods",
   data() {
     return {
-      routeCop: 2,
+      routeCop: 1,
     };
   },
   components: {

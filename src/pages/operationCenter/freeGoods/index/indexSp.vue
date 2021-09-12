@@ -7,24 +7,24 @@
     </goods-header>
     <!-- 表格 -->
     <div class="tabs-content">
-      <Tabs value="name0">
-        <TabPane label="未发布" name="name0">
-          <list-table :height="computedHeight" :stateNum="0" />
+      <Tabs v-model="name" @on-click="changeTab">
+        <TabPane  label="未发布" name="name0">
+          <list-table v-if="name === 'name0'" :height="computedHeight" :stateType="1" :stateNum="0" />
         </TabPane>
-        <TabPane label="已发布" name="name1">
-          <list-table :height="computedHeight" :stateNum="1" />
+        <TabPane  label="已发布" name="name1">
+          <list-table v-if="name === 'name1'" :height="computedHeight" :stateType="2" :stateNum="1" />
         </TabPane>
         <TabPane label="进行中" name="name2">
-          <list-table :height="computedHeight" :stateNum="2" />
+          <list-table  v-if="name === 'name2'" :height="computedHeight" :stateType="3" :stateNum="2" />
         </TabPane>
-        <TabPane label="已取消" name="name3">
-          <list-table :height="computedHeight" :stateNum="3" />
+        <TabPane  label="已取消" name="name3">
+          <list-table v-if="name === 'name3'" :height="computedHeight" :stateType="5" :stateNum="3" />
         </TabPane>
-        <TabPane label="已停止" name="name4">
-          <list-table :height="computedHeight" :stateNum="4" />
+        <TabPane  label="已停止" name="name4">
+          <list-table v-if="name === 'name4'" :height="computedHeight" :stateType="6" :stateNum="4" />
         </TabPane>
-        <TabPane label="已结束" name="name5">
-          <list-table :height="computedHeight" :stateNum="5" />
+        <TabPane  label="已结束" name="name5">
+          <list-table v-if="name === 'name5'" :height="computedHeight" :stateType="4" :stateNum="5" />
         </TabPane>
       </Tabs>
     </div>
@@ -34,11 +34,13 @@
 <script>
 import Header from "./../com/Header";
 import ListTable from "./../com/ListTable";
+
 export default {
   name: "goods",
   data() {
     return {
       computedHeight: 0,
+      name: 'name0'
     };
   },
   components: {
@@ -48,7 +50,11 @@ export default {
   methods: {
     createActivity() {
       // 创建活动
+      // this.$emit("change-route", 2);
+      
+      this.$router.push({name:'free-Goods-add',query: {type:'add'}})
     },
+    changeTab(name) {},
     getContentH() {
       let datas = [];
       if (this.$refs.headers) datas.push(this.$refs.headers);

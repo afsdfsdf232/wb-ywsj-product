@@ -6,7 +6,7 @@ import Qs from 'qs';
 import { Message, Notice } from 'view-design';
 import router from '@/router';
 // 创建一个错误
-function errorCreate (msg = '服务器内部错误') {
+function errorCreate(msg = '服务器内部错误') {
     console.log(msg)
     const err = new Error(msg);
     errorLog(err);
@@ -14,7 +14,7 @@ function errorCreate (msg = '服务器内部错误') {
 }
 
 // 记录和显示错误
-function errorLog (err) {
+function errorLog(err) {
     // 添加到日志
     store.dispatch('admin/log/push', {
         message: '数据请求异常',
@@ -46,10 +46,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // 创建一个 axios 实例
 const service = axios.create({
     // baseURL: process.env.VUE_APP_BASE_URL,
-    baseURL: Setting.apiBaseURL,
+    baseURL: '',///Setting.apiBaseURL,
     // baseURL: 'http://localhost:8081' + '/api',
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJzZWxmT3BlcmF0ZWQiOjAsInVpZCI6MTQzNTE4Mzc5OTM4OTM5Mjg5Nywic3ViIjoidXNlciIsInNlbGxlcklkIjoxNDMyNjI1NDg2Nzg5MzQ5Mzc4LCJmb3VuZGVyIjowLCJyb2xlcyI6WyJCVVlFUiIsIlNFTExFUiIsIkNMRVJLIiwiU0VMTEVSX-i2hee6p-euoeeQhuWRmCJdLCJzZWxsZXJOYW1lIjoi5byA5b-D5byA5b-DIiwiY2xlcmtJZCI6bnVsbCwiY2xlcmtOYW1lIjoiYWRtaW4iLCJleHAiOjE2MzEzNjQyNDYsInV1aWQiOm51bGwsInVzZXJuYW1lIjoiYWRtaW4ifQ.wIEIlsDuOmiCosJwsyBCi_yRAeADB6uY6-KoMNp9150jM-3lc2uVdYusqpXvjFe0B5d3BDbhDwk4MlXoSn08iQ'
         // 'Content-Type': 'application/json'
     },
     // 'type': 'json',
@@ -68,17 +69,21 @@ service.interceptors.request.use(
             header: {
                 // uuid,
                 timeOffset: 60000,
-                'content-type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
+        }
+        if (config.method === 'get') {
+            config.headers['Content-Type'] = 'application/json'
         }
         // json 提交
         if (config.isJson) {
+            console.log('config:', config)
             config = {
                 ...config,
                 header: {
                     // uuid,
                     timeOffset: 60000,
-                    "content-type": 'application/json'
+                    "Content-Type": 'application/json'
                 }
             }
         }
@@ -93,8 +98,12 @@ service.interceptors.request.use(
             // config.data = JSON.stringify(config.data)
         } else {
             if (config.method.toLocaleLowerCase() === 'post') {
-                // config.data = Qs.stringify(config.data)
-                config.data = config.data
+                if (config.hiddenFormData) {
+                    config.data = config.data
+                } else {
+                    config.data = Qs.stringify(config.data)
+                }
+
             } else {
                 // config.params = Qs.stringify(JSON.stringify(config.data));
                 config.params = config.data
@@ -161,20 +170,20 @@ service.interceptors.response.use(
     error => {
         if (error && error.response) {
             switch (error.response.status) {
-            case 400: error.message = '参数验证错误'; break;
-            case 302: error.message = '请先登录！'; break;
-            case 401: error.message = '无权操作'; break;
-            case 403: error.message = '拒绝访问'; break;
-            case 404: error.message = `资源未找到: ${error.response.config.url}`; break;
-            case 408: error.message = '请求超时'; break;
-            case 405: error.message = '请求方式错误'; break;
-            case 500: error.message = '网络错误，请稍候再试'; break;
-            case 1001: error.message = '服务调用异常'; break;
-            case 1003: error.message = '参数不存在'; break;
-            case 1004: error.message = '文件上传失败'; break;
-            case 504: error.message = '网关超时'; break;
-            case 505: error.message = 'HTTP版本不受支持'; break;
-            default: break;
+                case 400: error.message = '参数验证错误'; break;
+                case 302: error.message = '请先登录！'; break;
+                case 401: error.message = '无权操作'; break;
+                case 403: error.message = '拒绝访问'; break;
+                case 404: error.message = `资源未找到: ${error.response.config.url}`; break;
+                case 408: error.message = '请求超时'; break;
+                case 405: error.message = '请求方式错误'; break;
+                case 500: error.message = '网络错误，请稍候再试'; break;
+                case 1001: error.message = '服务调用异常'; break;
+                case 1003: error.message = '参数不存在'; break;
+                case 1004: error.message = '文件上传失败'; break;
+                case 504: error.message = '网关超时'; break;
+                case 505: error.message = 'HTTP版本不受支持'; break;
+                default: break;
             }
         }
         errorLog(error);

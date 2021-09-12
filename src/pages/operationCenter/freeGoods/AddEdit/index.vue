@@ -2,9 +2,9 @@
   <div class="container">
     <goods-header title="新建活动">
       <template #right>
-        <Button type="primary">保存</Button>
-        <Button class="m16" type="primary">发布</Button>
-        <Button>返回</Button>
+        <Button type="primary" @click="saveActivity">保存</Button>
+        <Button class="m16" type="primary" @click="release">发布</Button>
+        <Button @click="back">返回</Button>
       </template>
     </goods-header>
     <div class="content">
@@ -20,7 +20,7 @@
           <FormItem label="活动名称" prop="name">
             <Input
               style="width: 450px"
-              v-model="formValidate.name"
+              v-model="formValidate.activityTitle"
               placeholder="请输入活动名称"
             ></Input>
           </FormItem>
@@ -35,16 +35,16 @@
           </FormItem>
           <FormItem label="关联活动" prop="activity">
             <Select
-              v-model="formValidate.activity"
+              v-model="formValidate.parentActivityId"
               placeholder="请选择活动"
               clearable
               style="width: 450px"
             >
               <Option
                 v-for="item in activityList"
-                :value="item.value"
-                :key="item.value"
-                >{{ item.label }}</Option
+                :value="item.activityId"
+                :key="item.activityId"
+                >{{ item.activityTitle }}</Option
               >
             </Select>
           </FormItem>
@@ -628,10 +628,14 @@
 </template>
 
 <script>
+import {
+  addMFActivity,
+  queryVoteActivityList,
+  getGoodsTypesList,
+} from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
 import { quillEditor } from "vue-quill-editor";
-import { addQuillTitle } from "./quill-title";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -647,7 +651,6 @@ const validate = (rule, value, callback) => {
 export default {
   name: "addedit",
   data() {
-    let _this = this;
     return {
       fruit: [],
       addGoodsModal: {
@@ -664,7 +667,7 @@ export default {
       },
       advertisingSettingsModal: {
         // 广告设置弹窗
-        show: true,
+        show: false,
         state: 1,
       },
       search: {
@@ -708,20 +711,15 @@ export default {
         name: "",
         type: "",
       },
-      activityList: [
-        {
-          value: "New York",
-          label: "New York",
-        },
-        {
-          value: "London",
-          label: "London",
-        },
-      ],
+      activityList: [],
       formValidate: {
-        name: "",
+        activityTitle: "",
+        type: "", // 1保存 2发布
         date: "",
-        activity: "",
+        activityBeginDt: "", // 活动开始时间
+        activityEndDt: "", // 活动结束时间
+        parentActivityId: "",
+        activityTasks: [], // 任务列表
       },
       ruleValidate: {
         name: [
@@ -755,7 +753,8 @@ export default {
     "goods-header": Header,
   },
   mounted() {
-    addQuillTitle();
+    this.queryVoteActivityList();
+    this.getGoodsTypesList();
   },
   methods: {
     getSearchRest() {},
@@ -783,6 +782,62 @@ export default {
     },
     addGoodsOk() {},
     addGoodsCancel() {},
+    async queryVoteActivityList() {
+      // 查询关联活动列表
+      const res = await queryVoteActivityList({});
+      if (res.code === 0 && res.data) {
+        console.log("res:", res);
+        this.activityList = res.data || [];
+      }
+    },
+    async release() {
+      // 发布活动
+      const query = {
+        ...this.formValidate,
+        activityBeginDt: this.formValidate.date[0],
+        activityEndDt: this.formValidate.date[1],
+        type: 2,
+      };
+      const res = await addMFActivity(query);
+      if (res.code === 0) {
+        this.$Message.success("发布成功");
+        setTimeout(() => {
+          this.$router.go(-1);
+        }, 2000);
+      } else {
+        this.$Message.error(res.data.message || res.msg || "操作失败");
+      }
+    },
+    async saveActivity() {
+      // 保存活动
+      const query = {
+        ...this.formValidate,
+        activityBeginDt: this.formValidate.date[0],
+        activityEndDt: this.formValidate.date[1],
+        type: 1,
+      };
+      const res = await addMFActivity(query);
+      if (res.code === 0) {
+        this.$Message.success("保存成功");
+        setTimeout(() => {
+          this.$router.go(-1);
+        }, 2000);
+      } else {
+        this.$Message.error(res.data.message || res.msg || "操作失败");
+      }
+    },
+    back() {
+      // 返回
+      this.$router.go(-1);
+    },
+    async getGoodsTypesList() {
+      const res = await getGoodsTypesList({
+        page_no: 1,
+        page_size: 10,
+        goods_type: "",
+      });
+      console.log("res-goods-type:", res);
+    },
   },
 };
 </script>

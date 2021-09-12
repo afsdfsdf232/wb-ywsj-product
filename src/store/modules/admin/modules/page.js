@@ -145,6 +145,7 @@ export default {
          * @param {Object} param new tag info
          */
         add ({ state, commit, dispatch }, { tag, params, query, fullPath }) {
+            if (tag.meta.hiddenTag) return;
             return new Promise(async resolve => {
                 // 设置新的 tag 在新打开一个以前没打开过的页面时使用
                 let newTag = tag;
