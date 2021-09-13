@@ -1,14 +1,14 @@
 import request from '@/plugins/request';
 
-export function AccountLogin (data) {
-    return request({
-        url: '/api/login',
-        method: 'post',
-        data
-    });
+export function AccountLogin(data) {
+  return request({
+    url: '/api/login',
+    method: 'post',
+    data
+  });
 }
 // 分页列表
-export function getMFActivityListByPageList (data) {
+export function getMFActivityListByPageList(data) {
   return request({
     url: '/freeApi/MFActivity/queryMFActivityListByPage',
     method: 'post',
@@ -35,7 +35,7 @@ export function delMFActivity(data) {
 }
 
 // 取消发布活动
-export function cancelReleaseMFActivity(data){
+export function cancelReleaseMFActivity(data) {
   return request({
     url: '/freeApi/MFActivity/cancelReleaseMFActivity',
     method: 'post',
@@ -53,7 +53,7 @@ export function stopMFActivity(data) {
 }
 
 // 新建活动
-export function addMFActivity (data) {
+export function addMFActivity(data) {
   return request({
     url: '/freeApi/MFActivity/addMFActivity',
     method: 'post',
@@ -62,18 +62,18 @@ export function addMFActivity (data) {
 }
 
 // 查询投票活动列表
-export function queryVoteActivityList(data){
+export function queryVoteActivityList(data) {
   return request({
-    url:'/freeApi/MFActivity/queryVoteActivityList',
+    url: '/freeApi/MFActivity/queryVoteActivityList',
     method: 'post',
     data
   })
 }
 
 // 获取商品分类，新增
-export function getGoodsTypesList (data) {
+export function getGoodsTypesList(data) {
   return request({
-    url:'/jujosoApi/seller/goods',
+    url: 'http://api.jujoso.com/seller/goods',
     method: 'get',
     isJson: true,
     data
@@ -83,15 +83,15 @@ export function getGoodsTypesList (data) {
 // 查询任务管理列表
 export function getMFActivityTaskListByPage(data) {
   return request({
-    url:'/freeApi/MFActivity/queryMFActivityTaskListByPage',
+    url: '/freeApi/MFActivity/queryMFActivityTaskListByPage',
     data,
     method: 'post'
   })
 }
 // 删除任务
-export function delMFActivityTask(data){
+export function delMFActivityTask(data) {
   return request({
-    url:'/freeApi/MFActivity/delMFActivityTask',
+    url: '/freeApi/MFActivity/delMFActivityTask',
     data,
     method: 'post'
   })
@@ -109,7 +109,7 @@ export function updateMFActivityTask(data) {
 // 编辑任务规则
 export function updateRule(data) {
   return request({
-    url:'/freeApi/rule/updateRule',
+    url: '/freeApi/rule/updateRule',
     data,
     method: 'post'
   })
@@ -118,7 +118,7 @@ export function updateRule(data) {
 // 编辑广告设置
 export function editAdvert(data) {
   return request({
-    url:'/freeApi/advert/editAdvert',
+    url: '/freeApi/advert/editAdvert',
     data,
     method: 'post'
   })
@@ -137,9 +137,16 @@ export function fileUpload(data) {
 // 获取任务详情
 export function getMFActivityTaskDetail(data) {
   return request({
-    url:'/freeApi/MFActivity/queryMFActivityTaskDetail',
+    url: '/freeApi/MFActivity/queryMFActivityTaskDetail',
     data,
     method: 'post'
   })
 }
 
+// export function queryVoteActivityList(data) {
+//   return request({
+//     url: '/freeApi/MFActivity/queryVoteActivityList',
+//     method: 'post',
+//     data
+//   })
+// }

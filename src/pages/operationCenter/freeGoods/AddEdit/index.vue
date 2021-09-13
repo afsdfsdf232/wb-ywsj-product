@@ -17,7 +17,7 @@
           :rules="ruleValidate"
           :label-width="80"
         >
-          <FormItem label="活动名称" prop="name">
+          <FormItem label="活动名称" prop="activityTitle">
             <Input
               style="width: 450px"
               v-model="formValidate.activityTitle"
@@ -33,7 +33,7 @@
               style="width: 450px"
             ></DatePicker>
           </FormItem>
-          <FormItem label="关联活动" prop="activity">
+          <FormItem label="关联活动" prop="parentActivityId">
             <Select
               v-model="formValidate.parentActivityId"
               placeholder="请选择活动"
@@ -54,23 +54,60 @@
         <div class="tag">添加任务</div>
         <div class="table-content-box">
           <div class="table-header flex">
-            <div class="w60 br-right">序号</div>
-            <div class="w283 br-right">商品名称</div>
-            <div class="w249 br-right">SKU</div>
-            <div class="w300 br-right">数量</div>
-            <div class="w236 br-right">任务开始时间</div>
-            <div class="w236 br-right">任务结束时间</div>
+            <div class="w60 br-right col">序号</div>
+            <div class="w283 br-right col">商品名称</div>
+            <div class="w249 br-right col">SKU</div>
+            <div class="w300 br-right col">数量</div>
+            <div class="w236 br-right col">任务开始时间</div>
+            <div class="w236 br-right col">任务结束时间</div>
             <div class="w200">操作</div>
           </div>
           <div class="table-body">
-            <div class="table-row flex br-top">
-              <div class="w60 br-right">序号</div>
-              <div class="w283 br-right">商品名称</div>
-              <div class="w249 br-right">SKU</div>
-              <div class="w300 br-right" style="height: 100px">111</div>
-              <div class="w236 br-right">任务开始时间</div>
-              <div class="w236 br-right">任务结束时间</div>
-              <div class="w200">操作</div>
+            <div
+              class="table-row flex br-top"
+              v-for="(item, index) in tableList"
+              :key="item.goods_id"
+            >
+              <div class="w60 br-right col">{{ index + 1 }}</div>
+              <div class="w283 br-right col">{{ item.goods_name }}</div>
+              <div class="w249 br-right col">
+                <Input
+                  class="input-s"
+                  v-model="item.sku"
+                  placeholder="请输入..."
+                />
+              </div>
+              <div class="w300 br-right col">
+                <Input
+                  class="input-s"
+                  v-model="item.goodsNum"
+                  type="number"
+                  placeholder="请输入数量..."
+                />
+              </div>
+              <div class="w236 br-right col">
+                <DatePicker
+                  class="input-s"
+                  v-model="item.taskBeginDt"
+                  format="yyyy-MM-dd HH:mm:ss "
+                  type="date"
+                  placeholder="任务开始时间..."
+                ></DatePicker>
+              </div>
+              <div class="w236 br-right col">
+                <DatePicker
+                  class="input-s"
+                  v-model="item.taskEndDt"
+                  format="yyyy-MM-dd HH:mm:ss "
+                  type="date"
+                  placeholder="任务结束时间..."
+                ></DatePicker>
+              </div>
+              <div class="w200 col options">
+                <span @click="setRule(item)">规则设置</span>
+                <span @click="setAdvert(item)">广告设置</span>
+                <span @click="deleteGoods(item)">删除</span>
+              </div>
             </div>
             <div class="row flex no-list br-top">
               <div class="add" @click="addGoods">添加商品</div>
@@ -99,330 +136,50 @@
             ></search-form>
             <div class="goods-container">
               <div class="goods-left">
-                <CheckboxGroup v-model="fruit" @on-change="changeProduct">
-                  <Checkbox label="香蕉">
+                <CheckboxGroup
+                  v-model="mallGoodsFilterList"
+                  @on-change="changeProduct"
+                >
+                  <Checkbox
+                    :label="item.goods_id"
+                    v-for="item in mallGoodsList"
+                    :key="item.goods_id"
+                  >
                     <div class="goods-item">
                       <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
+                        <img :src="item.thumbnail" alt="" />
                       </div>
                       <div class="goods-info">
                         <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                          {{ item.goods_name }}
                         </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
+                        <p class="goods-gg">暂无规格</p>
+                        <p class="goods-price">￥ {{ item.price }}</p>
                       </div>
                     </div>
                   </Checkbox>
                 </CheckboxGroup>
               </div>
               <div class="goods-right">
-                <CheckboxGroup v-model="fruit">
-                  <Checkbox label="香蕉">
+                <CheckboxGroup
+                  @on-change="changeProduct"
+                  v-model="mallGoodsFilterList"
+                >
+                  <Checkbox
+                    :label="item.goods_id"
+                    v-for="item in mallGoodsSeleteList"
+                    :key="item.goods_id"
+                  >
                     <div class="goods-item">
                       <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
+                        <img :src="item.thumbnail" alt="" />
                       </div>
                       <div class="goods-info">
-                        <Icon type="md-medical" />
                         <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
+                          {{ item.goods_name }}
                         </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
-                      </div>
-                    </div>
-                  </Checkbox>
-                  <Checkbox label="香蕉">
-                    <div class="goods-item">
-                      <div class="goods-img">
-                        <img
-                          src="https://img2.baidu.com/it/u=3315324068,1694602888&fm=26&fmt=auto&gp=0.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="goods-info">
-                        <Icon type="md-medical" />
-                        <p class="goods-name">
-                          商品1111111商品1111111商品1111111商品1111111商品1111111
-                        </p>
-                        <p class="goods-gg">50g/五香</p>
-                        <p class="goods-price">￥ 500</p>
+                        <p class="goods-gg">暂无规格</p>
+                        <p class="goods-price">￥ {{ item.price }}</p>
                       </div>
                     </div>
                   </Checkbox>
@@ -437,6 +194,58 @@
               :formBtn="search.formBtn"
               @on-click="searchFilter"
             ></search-form>
+            <div class="goods-container">
+              <div class="goods-left">
+                <CheckboxGroup
+                  v-model="investmentCommoditiesFilterList"
+                  @on-change="changeProductInve"
+                >
+                  <Checkbox
+                    :label="item.goods_id"
+                    v-for="item in investmentCommodities"
+                    :key="item.goods_id"
+                  >
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img :src="item.thumbnail" alt="" />
+                      </div>
+                      <div class="goods-info">
+                        <p class="goods-name">
+                          {{ item.goods_name }}
+                        </p>
+                        <p class="goods-gg">暂无规格</p>
+                        <p class="goods-price">￥ {{ item.price }}</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                </CheckboxGroup>
+              </div>
+              <div class="goods-right">
+                <CheckboxGroup
+                  @on-change="changeProductInve"
+                  v-model="investmentCommoditiesFilterList"
+                >
+                  <Checkbox
+                    :label="item.goods_id"
+                    v-for="item in investmentCommoditiesSelete"
+                    :key="item.goods_id"
+                  >
+                    <div class="goods-item">
+                      <div class="goods-img">
+                        <img :src="item.thumbnail" alt="" />
+                      </div>
+                      <div class="goods-info">
+                        <p class="goods-name">
+                          {{ item.goods_name }}
+                        </p>
+                        <p class="goods-gg">暂无规格</p>
+                        <p class="goods-price">￥ {{ item.price }}</p>
+                      </div>
+                    </div>
+                  </Checkbox>
+                </CheckboxGroup>
+              </div>
+            </div>
           </Tab-pane>
         </Tabs>
       </div>
@@ -509,10 +318,10 @@
         </div>
       </div>
     </Modal>
-    <!-- 广告设置弹窗 Advertising settings -->
+    <!-- 广告设置弹窗 Advertising settings  @on-ok=""-->
     <Modal
       v-model="advertisingSettingsModal.show"
-      @on-ok="addGoodsOk"
+     
       width="50%"
       :mask-closable="false"
       title="规则设置"
@@ -631,7 +440,7 @@
 import {
   addMFActivity,
   queryVoteActivityList,
-  getGoodsTypesList,
+  getGoodsTypesList
 } from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
@@ -648,11 +457,24 @@ const validate = (rule, value, callback) => {
   }
   return callback(rule.message);
 };
+const validateParent = (rule, value, callback) => {
+  if (value) {
+     return callback();
+  } else {
+    return callback(rule.message);
+  }
+}
 export default {
   name: "addedit",
   data() {
     return {
-      fruit: [],
+      mallGoodsFilterList: [], // 最终的选择列表
+      mallGoodsList: [], // 商城商品列表
+      mallGoodsSeleteList: [], // 已经选择的商城商品--展示
+      investmentCommoditiesFilterList: [],
+      investmentCommodities: [], // 招商商品列表
+      investmentCommoditiesSelete: [], // 已经选择的招商商品--展示
+      tableList: [],
       addGoodsModal: {
         show: false,
       },
@@ -722,7 +544,7 @@ export default {
         activityTasks: [], // 任务列表
       },
       ruleValidate: {
-        name: [
+        activityTitle: [
           {
             required: true,
             message: "请输入活动名称",
@@ -735,14 +557,15 @@ export default {
             type: "array",
             message: "请选择活动时间",
             trigger: ["change", "blur"],
-            validator: validate,
+            validator: validate
           },
         ],
-        activity: [
+        parentActivityId: [
           {
             required: true,
             message: "请选择关联活动",
             trigger: "change",
+            validator: validateParent
           },
         ],
       },
@@ -777,10 +600,61 @@ export default {
       // 打开弹窗选择商品
       this.addGoodsModal.show = true;
     },
-    changeProduct(...args) {
-      console.log("args:", args);
+    changeProductInve(list) {
+      if (list.length === 0) {
+        this.investmentCommoditiesSelete = [];
+        return;
+      }
+      list.map((id) => {
+        const goods = this.investmentCommodities.find((item) => item.goods_id === id);
+        const you = this.investmentCommoditiesSelete.find(
+          (item) => item.goods_id === id
+        );
+        if (goods && !you) {
+          this.investmentCommoditiesSelete.push(goods);
+        }
+      });
+      // 过滤掉没有选择的商品
+      this.investmentCommoditiesSelete.forEach((item, index) => {
+        if (list.indexOf(item.goods_id) === -1) {
+          this.investmentCommoditiesSelete.splice(index, 1);
+        }
+      });
     },
-    addGoodsOk() {},
+    changeProduct(list) {
+      if (list.length === 0) {
+        this.mallGoodsSeleteList = [];
+        return;
+      }
+      list.map((id) => {
+        const goods = this.mallGoodsList.find((item) => item.goods_id === id);
+        const you = this.mallGoodsSeleteList.find(
+          (item) => item.goods_id === id
+        );
+        if (goods && !you) {
+          this.mallGoodsSeleteList.push(goods);
+        }
+      });
+      // 过滤掉没有选择的商品
+      this.mallGoodsSeleteList.forEach((item, index) => {
+        if (list.indexOf(item.goods_id) === -1) {
+          this.mallGoodsSeleteList.splice(index, 1);
+        }
+      });
+    },
+    addGoodsOk() {
+      // 去除重复数据
+      const  goods = Array.from(new Set([...this.mallGoodsFilterList, ...this.investmentCommoditiesFilterList]));
+      const productList = JSON.parse(JSON.stringify([...this.mallGoodsList, ...this.investmentCommodities])) 
+      if (goods.length> 0 && productList.length>0) {
+        goods.map(id => {
+          const goodsItem = productList.find(item=> item.goods_id === id)
+          if (goodsItem){
+            // const { } = goodsItem
+          }
+        })
+      }
+    },
     addGoodsCancel() {},
     async queryVoteActivityList() {
       // 查询关联活动列表
@@ -836,7 +710,23 @@ export default {
         page_size: 10,
         goods_type: "",
       });
+      if (res.data && res.data.data && res.data.data.length > 0) {
+        this.mallGoodsList = res.data.data;
+        this.investmentCommodities = res.data.data;
+      }
       console.log("res-goods-type:", res);
+    },
+    setRule(item) {
+      this.ruleSettingsModal.show = true;
+    },
+    setAdvert(item) {
+      this.advertisingSettingsModal.show = true;
+    },
+    deleteGoods(item) {
+      this.$Modal.confirm({
+        title: `确定删除该商品?`,
+        onOk: async () => {},
+      });
     },
   },
 };
@@ -865,6 +755,8 @@ export default {
   .flex {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
   }
   .w60 {
     text-align: center;
@@ -985,6 +877,9 @@ export default {
 }
 .goods-container {
   display: flex;
+  .goods-left {
+    border-right: 1px solid #DCDEE2;
+  }
   .goods-left,
   .goods-right {
     width: 50%;
@@ -1056,6 +951,21 @@ export default {
   .advertising-right {
     box-sizing: border-box;
     padding: 20px;
+  }
+}
+.col {
+  box-sizing: border-box;
+  padding: 10px 0;
+}
+.input-s {
+  width: 90%;
+}
+.options {
+  font-size: 12px;
+  color: #2e8cf0;
+  span {
+    margin: 0 5px;
+    cursor: pointer;
   }
 }
 </style>
