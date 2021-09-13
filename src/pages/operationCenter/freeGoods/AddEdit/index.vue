@@ -321,7 +321,6 @@
     <!-- 广告设置弹窗 Advertising settings  @on-ok=""-->
     <Modal
       v-model="advertisingSettingsModal.show"
-     
       width="50%"
       :mask-closable="false"
       title="规则设置"
@@ -440,7 +439,7 @@
 import {
   addMFActivity,
   queryVoteActivityList,
-  getGoodsTypesList
+  getGoodsTypesList,
 } from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
@@ -459,11 +458,11 @@ const validate = (rule, value, callback) => {
 };
 const validateParent = (rule, value, callback) => {
   if (value) {
-     return callback();
+    return callback();
   } else {
     return callback(rule.message);
   }
-}
+};
 export default {
   name: "addedit",
   data() {
@@ -557,7 +556,7 @@ export default {
             type: "array",
             message: "请选择活动时间",
             trigger: ["change", "blur"],
-            validator: validate
+            validator: validate,
           },
         ],
         parentActivityId: [
@@ -565,7 +564,7 @@ export default {
             required: true,
             message: "请选择关联活动",
             trigger: "change",
-            validator: validateParent
+            validator: validateParent,
           },
         ],
       },
@@ -606,7 +605,9 @@ export default {
         return;
       }
       list.map((id) => {
-        const goods = this.investmentCommodities.find((item) => item.goods_id === id);
+        const goods = this.investmentCommodities.find(
+          (item) => item.goods_id === id
+        );
         const you = this.investmentCommoditiesSelete.find(
           (item) => item.goods_id === id
         );
@@ -644,15 +645,60 @@ export default {
     },
     addGoodsOk() {
       // 去除重复数据
-      const  goods = Array.from(new Set([...this.mallGoodsFilterList, ...this.investmentCommoditiesFilterList]));
-      const productList = JSON.parse(JSON.stringify([...this.mallGoodsList, ...this.investmentCommodities])) 
-      if (goods.length> 0 && productList.length>0) {
-        goods.map(id => {
-          const goodsItem = productList.find(item=> item.goods_id === id)
-          if (goodsItem){
+      const goods = Array.from(
+        new Set([
+          ...this.mallGoodsFilterList,
+          ...this.investmentCommoditiesFilterList,
+        ])
+      );
+      const productList = JSON.parse(
+        JSON.stringify([...this.mallGoodsList, ...this.investmentCommodities])
+      );
+      if (goods.length > 0 && productList.length > 0) {
+        goods.map((id) => {
+          const goodsItem = productList.find((item) => item.goods_id === id);
+          if (goodsItem) {
             // const { } = goodsItem
+
+            const a = {
+              goodsId: "1",
+              skuId: "2",
+              goodsNum: "100",
+              taskBeginDt: "2021-09-05 15:55:56",
+              taskEndDt: "2021-09-10 16:06:09",
+              ruleDetail: [
+                {
+                  ruleDefId: "1",
+                  ruleName: "为选手投票",
+                  ruleParam: "通过链接为选手拉5票",
+                },
+                {
+                  ruleDefId: "4",
+                  ruleName: "礼物展示规则",
+                  ruleParam: "通过链接为选手拉5票",
+                },
+              ],
+              advertDetail: [
+                {
+                  advertAreaId: "5",
+                  fileId: "111",
+                  linkUrl: "www。skj.com",
+                },
+                {
+                  advertAreaId: "5",
+                  fileId: "111",
+                  advertTitle: "小广告",
+                  advertDesc: "广告内容",
+                },
+                {
+                  advertAreaId: "5",
+                  fileId: "111",
+                  linkUrl: "www。skj.com",
+                },
+              ],
+            };
           }
-        })
+        });
       }
     },
     addGoodsCancel() {},
@@ -878,7 +924,7 @@ export default {
 .goods-container {
   display: flex;
   .goods-left {
-    border-right: 1px solid #DCDEE2;
+    border-right: 1px solid #dcdee2;
   }
   .goods-left,
   .goods-right {
