@@ -57,7 +57,8 @@ export function addMFActivity(data) {
   return request({
     url: '/freeApi/MFActivity/addMFActivity',
     method: 'post',
-    data
+    data,
+    hiddenFormData: true
   })
 }
 
@@ -66,20 +67,30 @@ export function queryVoteActivityList(data) {
   return request({
     url: '/freeApi/MFActivity/queryVoteActivityList',
     method: 'post',
-    data
+    data,
+    
   })
 }
 
 // 获取商品分类，新增
 export function getGoodsTypesList(data) {
   return request({
-    url: 'http://api.jujoso.com/seller/goods',
+    url: 'https://api.javamall.com.cn/seller/seller/goods/skus',
     method: 'get',
     isJson: true,
     data
   })
 }
 
+// 店铺分组
+export function getGoodsCategoryList(data) {
+  return request({
+    url: 'https://api.javamall.com.cn/seller/seller/shops/cats',
+    method: 'get',
+    data,
+    isJson: true
+  })
+}
 // 查询任务管理列表
 export function getMFActivityTaskListByPage(data) {
   return request({

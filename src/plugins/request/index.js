@@ -50,8 +50,8 @@ const service = axios.create({
     // baseURL: 'http://localhost:8081' + '/api',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: ' eyJhbGciOiJIUzUxMiJ9.eyJzZWxmT3BlcmF0ZWQiOjAsInVpZCI6MTQzNTE4Mzc5OTM4OTM5Mjg5Nywic3ViIjoidXNlciIsInNlbGxlcklkIjoxNDMyNjI1NDg2Nzg5MzQ5Mzc4LCJmb3VuZGVyIjowLCJyb2xlcyI6WyJCVVlFUiIsIlNFTExFUiIsIkNMRVJLIiwiU0VMTEVSX-i2hee6p-euoeeQhuWRmCJdLCJzZWxsZXJOYW1lIjoi5byA5b-D5byA5b-DIiwiY2xlcmtJZCI6bnVsbCwiY2xlcmtOYW1lIjoiYWRtaW4iLCJleHAiOjE2MzE1NDM5MDUsInV1aWQiOm51bGwsInVzZXJuYW1lIjoiYWRtaW4ifQ.01RfXlcRmODbUzHwtO031AbCTPB5n6O9rwUceR77vW26Rp6JaqHIUVeKrZOP2RCorEkFHrUFCSQAREbdmY3fyg'
-        ,uuid: '86444eb0-12ef-11ec-a07b-256862264a29'
+        Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJzZWxmT3BlcmF0ZWQiOjEsInVpZCI6Miwic3ViIjoidXNlciIsInNlbGxlcklkIjoxLCJmb3VuZGVyIjoxLCJyb2xlcyI6WyJCVVlFUiIsIlNFTExFUiIsIkNMRVJLIiwiU0VMTEVSX1NVUEVSX1NFTExFUiJdLCJzZWxsZXJOYW1lIjoi5bmz5Y-w6Ieq6JClIiwiY2xlcmtJZCI6bnVsbCwiY2xlcmtOYW1lIjoiamF2YXNob3AiLCJleHAiOjE2MzE2MzU3OTIsInV1aWQiOm51bGwsInVzZXJuYW1lIjoiamF2YXNob3AifQ.fAa1mIKKKS47mHNHKGX2NfhKtrIp8kbGYTO1xuU8zii7Z0jTf5YEPnqQtvOBTVjhNKSrh7SOB3KCkH-iua-DNQ'
+        ,uuid: 'f8a12e50-155c-11ec-9ad6-5b8ff1c8fedd'
         // 'Content-Type': 'application/json'
     },
     // 'type': 'json',
@@ -102,7 +102,7 @@ service.interceptors.request.use(
                 if (config.hiddenFormData) {
                     config.data = config.data
                 } else {
-                    config.data = Qs.stringify(config.data)
+                    config.data = Qs.stringify(config.data, { indices: false })
                 }
 
             } else {

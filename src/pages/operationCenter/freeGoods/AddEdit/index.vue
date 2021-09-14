@@ -65,11 +65,11 @@
           <div class="table-body">
             <div
               class="table-row flex br-top"
-              v-for="(item, index) in tableList"
+              v-for="(item, index) in formValidate.activityTasks"
               :key="item.goods_id"
             >
               <div class="w60 br-right col">{{ index + 1 }}</div>
-              <div class="w283 br-right col">{{ item.goods_name }}</div>
+              <div class="w283 br-right col">{{ item.goodsName }}</div>
               <div class="w249 br-right col">
                 <Input
                   class="input-s"
@@ -188,12 +188,6 @@
             </div>
           </Tab-pane>
           <Tab-pane label="招商商品" name="name2">
-            <search-form
-              :queryFieids="search.queryFieids"
-              :search="search.search"
-              :formBtn="search.formBtn"
-              @on-click="searchFilter"
-            ></search-form>
             <div class="goods-container">
               <div class="goods-left">
                 <CheckboxGroup
@@ -440,10 +434,12 @@ import {
   addMFActivity,
   queryVoteActivityList,
   getGoodsTypesList,
+  getGoodsCategoryList,
 } from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
 import { quillEditor } from "vue-quill-editor";
+import dayjs from 'dayjs';
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -506,7 +502,7 @@ export default {
           // 搜索框字段
           {
             type: "Select",
-            label: "商品分类",
+            label: "店铺分组",
             placeholder: "请选择",
             prop: "type",
             option: typeData,
@@ -537,8 +533,8 @@ export default {
         activityTitle: "",
         type: "", // 1保存 2发布
         date: "",
-        activityBeginDt: "", // 活动开始时间
-        activityEndDt: "", // 活动结束时间
+        activityBeginTime: "", // 活动开始时间
+        activityEndTime: "", // 活动结束时间
         parentActivityId: "",
         activityTasks: [], // 任务列表
       },
@@ -577,6 +573,7 @@ export default {
   mounted() {
     this.queryVoteActivityList();
     this.getGoodsTypesList();
+    this.getGoodsCategoryList();
   },
   methods: {
     getSearchRest() {},
@@ -647,56 +644,32 @@ export default {
       // 去除重复数据
       const goods = Array.from(
         new Set([
-          ...this.mallGoodsFilterList,
-          ...this.investmentCommoditiesFilterList,
+          ...JSON.parse(JSON.stringify(this.mallGoodsFilterList)),
+          ...JSON.parse(JSON.stringify(this.investmentCommoditiesFilterList)),
         ])
       );
       const productList = JSON.parse(
-        JSON.stringify([...this.mallGoodsList, ...this.investmentCommodities])
+        JSON.stringify([
+          ...JSON.parse(JSON.stringify(this.mallGoodsList)),
+          ...JSON.parse(JSON.stringify(this.investmentCommodities)),
+        ])
       );
       if (goods.length > 0 && productList.length > 0) {
         goods.map((id) => {
           const goodsItem = productList.find((item) => item.goods_id === id);
           if (goodsItem) {
-            // const { } = goodsItem
-
-            const a = {
-              goodsId: "1",
-              skuId: "2",
-              goodsNum: "100",
-              taskBeginDt: "2021-09-05 15:55:56",
-              taskEndDt: "2021-09-10 16:06:09",
-              ruleDetail: [
-                {
-                  ruleDefId: "1",
-                  ruleName: "为选手投票",
-                  ruleParam: "通过链接为选手拉5票",
-                },
-                {
-                  ruleDefId: "4",
-                  ruleName: "礼物展示规则",
-                  ruleParam: "通过链接为选手拉5票",
-                },
-              ],
-              advertDetail: [
-                {
-                  advertAreaId: "5",
-                  fileId: "111",
-                  linkUrl: "www。skj.com",
-                },
-                {
-                  advertAreaId: "5",
-                  fileId: "111",
-                  advertTitle: "小广告",
-                  advertDesc: "广告内容",
-                },
-                {
-                  advertAreaId: "5",
-                  fileId: "111",
-                  linkUrl: "www。skj.com",
-                },
-              ],
-            };
+            const { goods_id, sku_id, goods_name } = goodsItem;
+            this.formValidate.activityTasks.push({
+              goodsId: goods_id,
+              skuId: sku_id,
+              sku: "",
+              goodsNum: 0,
+              goodsName: goods_name,
+              taskBeginDt: "",
+              taskEndDt: "",
+              ruleDetail: [],
+              advertDetail: [],
+            });
           }
         });
       }
@@ -728,23 +701,57 @@ export default {
         this.$Message.error(res.data.message || res.msg || "操作失败");
       }
     },
-    async saveActivity() {
+    saveActivity() {
+      this.$refs["formValidate"].validate( async (valid) => {
+        console.log('valid:',valid)
+        if (valid) {
+          const query = {
+            ...this.formValidate,
+            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
+            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
+            type: 1,
+          };
+          console.log('query', query);
+          if (query.activityTasks.length === 0) {
+            this.$Message.error('请选择商品')
+            return
+          }
+          for(let i=0; i<query.activityTasks.length; i++) {
+            
+            if (query.activityTasks[i].goodsNum<=0) {
+              this.$Message.error('请输入商品数量')
+              return
+            }
+            if (!query.activityTasks[i].taskBeginDt) {
+              this.$Message.error('请选择任务开始时间')
+              return
+            }
+               if (!query.activityTasks[i].taskEndDt) {
+              this.$Message.error('请选择任务结束时间')
+              return
+            }
+            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
+            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+            
+          }
+          // 验证是否存在未填写数量和日期的商品
+          console.log('query:',query)
+          const newQuery = new FormData()
+          for(let key in query) {
+            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
+          }
+          const res = await addMFActivity(newQuery);
+          if (res.code === 0) {
+            this.$Message.success("保存成功");
+            setTimeout(() => {
+              this.$router.go(-1);
+            }, 2000);
+          } else {
+            this.$Message.error(res.data.message || res.msg || "操作失败");
+          }
+        }
+      });
       // 保存活动
-      const query = {
-        ...this.formValidate,
-        activityBeginDt: this.formValidate.date[0],
-        activityEndDt: this.formValidate.date[1],
-        type: 1,
-      };
-      const res = await addMFActivity(query);
-      if (res.code === 0) {
-        this.$Message.success("保存成功");
-        setTimeout(() => {
-          this.$router.go(-1);
-        }, 2000);
-      } else {
-        this.$Message.error(res.data.message || res.msg || "操作失败");
-      }
     },
     back() {
       // 返回
@@ -754,13 +761,20 @@ export default {
       const res = await getGoodsTypesList({
         page_no: 1,
         page_size: 10,
-        goods_type: "",
+        goods_type: "NORMAL",
+        market_enable: 1,
+        is_auth: 1,
       });
       if (res.data && res.data.data && res.data.data.length > 0) {
         this.mallGoodsList = res.data.data;
         this.investmentCommodities = res.data.data;
       }
       console.log("res-goods-type:", res);
+    },
+    async getGoodsCategoryList() {
+      //  店铺分组
+      const res = await getGoodsCategoryList({});
+      console.log("res-店铺分组:", res);
     },
     setRule(item) {
       this.ruleSettingsModal.show = true;
@@ -815,15 +829,21 @@ export default {
     border-top: 1px solid #e3e8ee;
   }
   .w283 {
-    min-width: 20%;
+    box-sizing: border-box;
+    padding: 6px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    word-break: break-all;
+    width: 20%;
     text-align: center;
   }
   .w249 {
-    min-width: 18%;
+    width: 18%;
     text-align: center;
   }
   .w300 {
-    min-width: 22%;
+    width: 22%;
     text-align: center;
   }
   .w236 {
