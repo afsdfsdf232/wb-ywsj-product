@@ -66,7 +66,7 @@
             <div
               class="table-row flex br-top"
               v-for="(item, index) in formValidate.activityTasks"
-              :key="item.goods_id"
+              :key="item.goodsId"
             >
               <div class="w60 br-right col">{{ index + 1 }}</div>
               <div class="w283 br-right col">{{ item.goodsName }}</div>
@@ -141,9 +141,9 @@
                   @on-change="changeProduct"
                 >
                   <Checkbox
-                    :label="item.goods_id"
+                    :label="item.goodsId"
                     v-for="item in mallGoodsList"
-                    :key="item.goods_id"
+                    :key="item.goodsId"
                   >
                     <div class="goods-item">
                       <div class="goods-img">
@@ -151,7 +151,7 @@
                       </div>
                       <div class="goods-info">
                         <p class="goods-name">
-                          {{ item.goods_name }}
+                          {{ item.goodsName }}
                         </p>
                         <p class="goods-gg">暂无规格</p>
                         <p class="goods-price">￥ {{ item.price }}</p>
@@ -166,9 +166,9 @@
                   v-model="mallGoodsFilterList"
                 >
                   <Checkbox
-                    :label="item.goods_id"
+                    :label="item.goodsId"
                     v-for="item in mallGoodsSeleteList"
-                    :key="item.goods_id"
+                    :key="item.goodsId"
                   >
                     <div class="goods-item">
                       <div class="goods-img">
@@ -176,7 +176,7 @@
                       </div>
                       <div class="goods-info">
                         <p class="goods-name">
-                          {{ item.goods_name }}
+                          {{ item.goodsName }}
                         </p>
                         <p class="goods-gg">暂无规格</p>
                         <p class="goods-price">￥ {{ item.price }}</p>
@@ -195,9 +195,9 @@
                   @on-change="changeProductInve"
                 >
                   <Checkbox
-                    :label="item.goods_id"
+                    :label="item.goodsId"
                     v-for="item in investmentCommodities"
-                    :key="item.goods_id"
+                    :key="item.goodsId"
                   >
                     <div class="goods-item">
                       <div class="goods-img">
@@ -205,7 +205,7 @@
                       </div>
                       <div class="goods-info">
                         <p class="goods-name">
-                          {{ item.goods_name }}
+                          {{ item.goodsName }}
                         </p>
                         <p class="goods-gg">暂无规格</p>
                         <p class="goods-price">￥ {{ item.price }}</p>
@@ -220,9 +220,9 @@
                   v-model="investmentCommoditiesFilterList"
                 >
                   <Checkbox
-                    :label="item.goods_id"
+                    :label="item.goodsId"
                     v-for="item in investmentCommoditiesSelete"
-                    :key="item.goods_id"
+                    :key="item.goodsId"
                   >
                     <div class="goods-item">
                       <div class="goods-img">
@@ -230,7 +230,7 @@
                       </div>
                       <div class="goods-info">
                         <p class="goods-name">
-                          {{ item.goods_name }}
+                          {{ item.goodsName }}
                         </p>
                         <p class="goods-gg">暂无规格</p>
                         <p class="goods-price">￥ {{ item.price }}</p>
@@ -247,7 +247,7 @@
     <!-- 规则设置弹窗 Rule settings-->
     <Modal
       v-model="ruleSettingsModal.show"
-      @on-ok="addGoodsOk"
+      @on-ok="addGoodsRuleOk"
       width="50%"
       :mask-closable="false"
       title="规则设置"
@@ -256,7 +256,7 @@
       <div class="p-lr30">
         <div class="rule-list">
           <p class="title">领取规则：</p>
-          <RadioGroup v-model="ruleSettingsModal.ruleValue" vertical>
+          <RadioGroup @on-change="changeRule" v-model="ruleSettingsModal.ruleDefId" vertical>
             <Radio :label="1">
               <span>为选手选票</span>
             </Radio>
@@ -270,31 +270,39 @@
           </RadioGroup>
         </div>
         <div class="rule-input">
-          <div v-if="ruleSettingsModal.ruleValue === 1">
+          <div v-if="ruleSettingsModal.ruleDefId === 1">
             <span>通过链接为选手拉</span>
             <Input
               style="margin: 10px; width: 200px"
               placeholder="请输入票数"
+              type="number"
+              v-model="ruleSettingsModal.voteNum"
             />
             <span>票</span>
           </div>
-          <div v-if="ruleSettingsModal.ruleValue === 2">
+          <div v-if="ruleSettingsModal.ruleDefId === 2">
             <span>邀请用户</span>
             <Input
+             type="number"
+              v-model="ruleSettingsModal.eachNum"
               style="margin: 10px; width: 200px"
               placeholder="请输入人数"
             />
             <span>个</span>
           </div>
-          <div v-if="ruleSettingsModal.ruleValue === 3">
+          <div v-if="ruleSettingsModal.ruleDefId === 3">
             <span>通过链接为选手拉</span>
             <Input
               style="margin: 10px; width: 200px"
               placeholder="请输入票数"
+              type="number"
+              v-model="ruleSettingsModal.voteNum"
             />
             <span>票，</span>
             <span>且邀请用户</span>
             <Input
+              type="number"
+              v-model="ruleSettingsModal.eachNum"
               style="margin: 10px; width: 200px"
               placeholder="请输入人数"
             />
@@ -305,9 +313,9 @@
           <p class="title">活动规则</p>
           <quill-editor
             style="height: 300px"
-            :content="content"
+            :content="ruleSettingsModal.activityRule"
             :options="editorOption"
-            v-model="tinymceHtml"
+            v-model="ruleSettingsModal.activityRule"
           ></quill-editor>
         </div>
       </div>
@@ -317,6 +325,7 @@
       v-model="advertisingSettingsModal.show"
       width="50%"
       :mask-closable="false"
+      @on-ok="advertisingOk"
       title="规则设置"
       @on-cancel="addGoodsCancel"
     >
@@ -324,20 +333,20 @@
         <div class="advertising-content">
           <div class="advertising-left">
             <p
-              @click="advertisingSettingsModal.state = 1"
-              :class="{ 'active-p': advertisingSettingsModal.state === 1 }"
+              @click="advertisingSettingsModal.state = 5"
+              :class="{ 'active-p': advertisingSettingsModal.state === 5 }"
             >
               投票闪频广告
             </p>
             <p
-              @click="advertisingSettingsModal.state = 2"
-              :class="{ 'active-p': advertisingSettingsModal.state === 2 }"
+              @click="advertisingSettingsModal.state = 6"
+              :class="{ 'active-p': advertisingSettingsModal.state === 6 }"
             >
               选手继续投票页弹框广告
             </p>
             <p
-              @click="advertisingSettingsModal.state = 3"
-              :class="{ 'active-p': advertisingSettingsModal.state === 3 }"
+              @click="advertisingSettingsModal.state = 7"
+              :class="{ 'active-p': advertisingSettingsModal.state === 7 }"
             >
               分享链接
             </p>
@@ -345,69 +354,47 @@
           <div class="advertising-right">
             <div
               v-if="
-                advertisingSettingsModal.state === 1 ||
-                advertisingSettingsModal.state === 3
+                advertisingSettingsModal.state === 5
               "
             >
               <p>图片</p>
               <div>
-                <Upload
-                  ref="upload"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess"
-                  :format="['jpg', 'jpeg', 'png']"
-                  :max-size="2048"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload"
-                  multiple
-                  type="drag"
-                  action="//jsonplaceholder.typicode.com/posts/"
-                  style="display: inline-block; width: 200px; margin: 16px 0"
-                >
-                  <div style="width: 200px; height: 200px; line-height: 200px">
-                    <Icon size="20" type="md-add" />
-                    <p>上传图片</p>
-                  </div>
-                </Upload>
+                <uploadFile  :img="advertInfo['5'].fileUrl" @click="changeFile('5')"  :on-success="uploadSuccess" />
               </div>
               <p>注意：上传图片尺寸为750X1334px，大小不能超过2M</p>
               <div class="input-content" style="margin: 20px 0">
                 <div>
                   <span>链接：</span>
-                  <Input placeholder="请输入..." style="width: 400px" />
+                  <Input v-model="advertInfo['5'].linkUrl" placeholder="请输入..." style="width: 400px" />
                 </div>
               </div>
             </div>
-            <div v-if="advertisingSettingsModal.state === 2">
+            <div
+              v-if="
+                advertisingSettingsModal.state === 7
+              "
+            >
+              <p>图片</p>
+              <div>
+                <uploadFile   :img="advertInfo['7'].fileUrl" @click="changeFile('7')"  :on-success="uploadSuccess" />
+              </div>
+              <p>注意：上传图片尺寸为750X1334px，大小不能超过2M</p>
+              <div class="input-content" style="margin: 20px 0">
+                <div>
+                  <span>链接：</span>
+                  <Input v-model="advertInfo['7'].linkUrl" placeholder="请输入..." style="width: 400px" />
+                </div>
+              </div>
+            </div>
+            <div v-if="advertisingSettingsModal.state === 6">
               <p>logo</p>
               <div>
-                <Upload
-                  ref="upload"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess"
-                  :format="['jpg', 'jpeg', 'png']"
-                  :max-size="2048"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload"
-                  multiple
-                  type="drag"
-                  action="//jsonplaceholder.typicode.com/posts/"
-                  style="display: inline-block; width: 200px; margin: 16px 0"
-                >
-                  <div style="width: 200px; height: 200px; line-height: 200px">
-                    <Icon size="20" type="md-add" />
-                    <p>上传图片</p>
-                  </div>
-                </Upload>
+               <uploadFile  :img="advertInfo['6'].fileUrl" @click="changeFile('6')" :on-success="uploadSuccess" />
               </div>
               <div class="input-content" style="margin: 20px 0">
                 <div>
                   <span>标题：</span>
-                  <Input placeholder="请输入..." style="width: 400px" />
+                  <Input  v-model="advertInfo['6'].advertTitle" placeholder="请输入..." style="width: 400px" />
                 </div>
               </div>
               <div class="input-content" style="margin: 20px 0">
@@ -416,6 +403,7 @@
                   <Input
                     style="width: 400px"
                     type="textarea"
+                    v-model="advertInfo['6'].advertDesc"
                     :autosize="{ minRows: 2, maxRows: 5 }"
                     placeholder="请输入..."
                   />
@@ -435,9 +423,11 @@ import {
   queryVoteActivityList,
   getGoodsTypesList,
   getGoodsCategoryList,
+  getSupportGoodsList
 } from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
+import UploadFile from "./../com/UploadFile";
 import { quillEditor } from "vue-quill-editor";
 import dayjs from 'dayjs';
 import "quill/dist/quill.core.css";
@@ -459,6 +449,16 @@ const validateParent = (rule, value, callback) => {
     return callback(rule.message);
   }
 };
+const relues = {
+  1: "为选手投票",
+  2: "邀请用户",
+  3: "既邀请用户且用户需投票",
+}
+const advertAreaIdTypes = {
+  5: "投票闪频广告",
+  6: "选手继续投票页弹框广告",
+  7: "分享链接",
+};
 export default {
   name: "addedit",
   data() {
@@ -473,19 +473,47 @@ export default {
       addGoodsModal: {
         show: false,
       },
-      tinymceHtml: "<h1>hahha</h1>",
-      content: "<h1>hahha</h1>",
       editorOption: {
         height: 600,
       },
       ruleSettingsModal: {
+        goodsId: '',
         show: false,
-        ruleValue: 1,
+        ruleDefId: 1,
+        voteNum: 0, // 票数
+        eachNum: 0, // 人数
+        activityRule: '' // 规则内容
+      },
+      advertInfo: { 
+        5: {
+          // 广告信息
+          advertAreaId: 5, // 广告类
+          fileId: "", // 广告图片
+          linkUrl: "", // 广告链接
+          fileUrl:''
+        },
+        6: {
+          // 广告信息
+          advertAreaId: 6, // 广告类型
+          fileId: "", // 广告图片id
+          advertTitle: "", // 广告标题
+          advertDesc: "", // 广告内容
+          fileUrl:''
+        },
+        7: {
+          // 广告信息
+          advertAreaId: 7, // 广告类型
+          fileId: "", // 广告图片id
+          linkUrl: "", // 广告链接
+          fileUrl:''
+        },
       },
       advertisingSettingsModal: {
         // 广告设置弹窗
+        goodsId: '',
         show: false,
-        state: 1,
+        state: 5,
+        item: 0
       },
       search: {
         formBtn: [
@@ -569,11 +597,13 @@ export default {
   components: {
     "quill-editor": quillEditor,
     "goods-header": Header,
+    uploadFile: UploadFile,
   },
   mounted() {
     this.queryVoteActivityList();
     this.getGoodsTypesList();
     this.getGoodsCategoryList();
+    this.getSupportGoodsList()
   },
   methods: {
     getSearchRest() {},
@@ -603,10 +633,10 @@ export default {
       }
       list.map((id) => {
         const goods = this.investmentCommodities.find(
-          (item) => item.goods_id === id
+          (item) => item.goodsId === id
         );
         const you = this.investmentCommoditiesSelete.find(
-          (item) => item.goods_id === id
+          (item) => item.goodsId === id
         );
         if (goods && !you) {
           this.investmentCommoditiesSelete.push(goods);
@@ -614,7 +644,7 @@ export default {
       });
       // 过滤掉没有选择的商品
       this.investmentCommoditiesSelete.forEach((item, index) => {
-        if (list.indexOf(item.goods_id) === -1) {
+        if (list.indexOf(item.goodsId) === -1) {
           this.investmentCommoditiesSelete.splice(index, 1);
         }
       });
@@ -625,9 +655,9 @@ export default {
         return;
       }
       list.map((id) => {
-        const goods = this.mallGoodsList.find((item) => item.goods_id === id);
+        const goods = this.mallGoodsList.find((item) => item.goodsId === id);
         const you = this.mallGoodsSeleteList.find(
-          (item) => item.goods_id === id
+          (item) => item.goodsId === id
         );
         if (goods && !you) {
           this.mallGoodsSeleteList.push(goods);
@@ -635,7 +665,7 @@ export default {
       });
       // 过滤掉没有选择的商品
       this.mallGoodsSeleteList.forEach((item, index) => {
-        if (list.indexOf(item.goods_id) === -1) {
+        if (list.indexOf(item.goodsId) === -1) {
           this.mallGoodsSeleteList.splice(index, 1);
         }
       });
@@ -656,15 +686,15 @@ export default {
       );
       if (goods.length > 0 && productList.length > 0) {
         goods.map((id) => {
-          const goodsItem = productList.find((item) => item.goods_id === id);
+          const goodsItem = productList.find((item) => item.goodsId === id);
           if (goodsItem) {
-            const { goods_id, sku_id, goods_name } = goodsItem;
+            const { goodsId, skuId, goodsName } = goodsItem;
             this.formValidate.activityTasks.push({
-              goodsId: goods_id,
-              skuId: sku_id,
+              goodsId,
+              skuId,
               sku: "",
               goodsNum: 0,
-              goodsName: goods_name,
+              goodsName,
               taskBeginDt: "",
               taskEndDt: "",
               ruleDetail: [],
@@ -685,21 +715,54 @@ export default {
     },
     async release() {
       // 发布活动
-      const query = {
-        ...this.formValidate,
-        activityBeginDt: this.formValidate.date[0],
-        activityEndDt: this.formValidate.date[1],
-        type: 2,
-      };
-      const res = await addMFActivity(query);
-      if (res.code === 0) {
-        this.$Message.success("发布成功");
-        setTimeout(() => {
-          this.$router.go(-1);
-        }, 2000);
-      } else {
-        this.$Message.error(res.data.message || res.msg || "操作失败");
-      }
+        this.$refs["formValidate"].validate( async (valid) => {
+        if (valid) {
+          const query = {
+            ...this.formValidate,
+            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
+            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
+            type: 2,
+          };
+          console.log('query', query);
+          if (query.activityTasks.length === 0) {
+            this.$Message.error('请选择商品')
+            return
+          }
+          for(let i=0; i<query.activityTasks.length; i++) {
+            
+            if (query.activityTasks[i].goodsNum<=0) {
+              this.$Message.error('请输入商品数量')
+              return
+            }
+            if (!query.activityTasks[i].taskBeginDt) {
+              this.$Message.error('请选择任务开始时间')
+              return
+            }
+               if (!query.activityTasks[i].taskEndDt) {
+              this.$Message.error('请选择任务结束时间')
+              return
+            }
+            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
+            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+            
+          }
+          // 验证是否存在未填写数量和日期的商品
+          console.log('query:',query)
+          const newQuery = new FormData()
+          for(let key in query) {
+            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
+          }
+          const res = await addMFActivity(newQuery);
+          if (res.code === 0) {
+            this.$Message.success("保存成功");
+            setTimeout(() => {
+              this.$router.go(-1);
+            }, 2000);
+          } else {
+            this.$Message.error(res.data.message || res.msg || "操作失败");
+          }
+        }
+      });
     },
     saveActivity() {
       this.$refs["formValidate"].validate( async (valid) => {
@@ -766,10 +829,26 @@ export default {
         is_auth: 1,
       });
       if (res.data && res.data.data && res.data.data.length > 0) {
-        this.mallGoodsList = res.data.data;
-        this.investmentCommodities = res.data.data;
+        this.mallGoodsList = res.data.data.map(item => {
+          return {
+            goodsId: item.goods_id,
+            skuId: item.sku_id,
+            goodsName: item.goods_name,
+            ...item,
+          }
+          
+        });
+        // this.investmentCommodities = res.data.data;
       }
       console.log("res-goods-type:", res);
+    },
+    async getSupportGoodsList() {
+      // 获取招商商品
+      const res = await getSupportGoodsList({})
+      if(res.code === 0 && res.data) {
+        this.investmentCommodities = res.data || []
+      }
+      console.log('招商商品;', res)
     },
     async getGoodsCategoryList() {
       //  店铺分组
@@ -777,15 +856,66 @@ export default {
       console.log("res-店铺分组:", res);
     },
     setRule(item) {
+      this.ruleSettingsModal.goodsId = item.goodsId
       this.ruleSettingsModal.show = true;
     },
+    changeRule() {
+      this.ruleSettingsModal.voteNum = 0
+      this.ruleSettingsModal.eachNum = 0
+    },
+    addGoodsRuleOk(){
+      const {activityRule,goodsId,ruleDefId,eachNum,voteNum } = this.ruleSettingsModal
+      const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
+      if(index> -1) {
+        const newRuleDetail = {
+          ruleDefId,
+          activityRule,
+          eachNum,
+          voteNum,
+          ruleName: relues[ruleDefId]
+        }
+        this.formValidate.activityTasks[index].ruleDetail = [newRuleDetail]
+      }
+      
+      console.log('ruleSettingsModal:', this.ruleSettingsModal)
+    },
+    changeFile(val) {
+      console.log('val')
+      this.advertisingSettingsModal.item = val;
+    },
+    advertisingOk() {
+      const adverList = []
+      for(let key in this.advertInfo) {
+        adverList.push(this.advertInfo[key])
+      }
+      const goodsId = this.advertisingSettingsModal.goodsId
+      const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
+      if (index> -1) {
+        this.formValidate.activityTasks[index].advertDetail = adverList
+      }
+      console.log('advertInfo advertisingSettingsModal:', this.advertInfo, )
+    },
+    uploadSuccess(file){
+      console.log('file:', file)
+      const {fileId,fileUrl } = file
+      this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
+      this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
+    },
     setAdvert(item) {
+      this.advertisingSettingsModal.goodsId = item.goodsId
       this.advertisingSettingsModal.show = true;
     },
     deleteGoods(item) {
       this.$Modal.confirm({
         title: `确定删除该商品?`,
-        onOk: async () => {},
+        onOk: async () => {
+          console.log('item:', item)
+         const index = this.formValidate.activityTasks.findIndex(goods => goods.goodsId === item.goodsId)
+         if (index> -1) {
+           console.log(index)
+           this.formValidate.activityTasks.splice(index,1)
+         }
+        },
       });
     },
   },

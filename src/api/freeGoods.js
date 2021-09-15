@@ -154,10 +154,21 @@ export function getMFActivityTaskDetail(data) {
   })
 }
 
-// export function queryVoteActivityList(data) {
-//   return request({
-//     url: '/freeApi/MFActivity/queryVoteActivityList',
-//     method: 'post',
-//     data
-//   })
-// }
+
+// 获取招商商品列表
+export function getSupportGoodsList(data) {
+  return request({
+    url: '/freeApi/MFActivity/querySupportGoodsList',
+    method: 'post',
+    data
+  })
+}
+
+// 查询领取统计列表
+export function getMFActivityTaskReceiveListByPage(data) {
+  return request({
+    url: '/freeApi/MFActivity/queryMFActivityTaskReceiveListByPage',
+    data,
+    method: 'post'
+  })
+}

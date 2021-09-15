@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
+  <div class="container" @click="changeFile">
     <input type="file" @change="uploadFile" class="file-btn" />
-    <template v-if="!src">
+    <template v-if="!img">
       <Icon type="md-add" class="add-icon" size="20" />
     </template>
-    <template v-if="src">
+    <template v-if="img">
       <div class="img-box">
-        <img :src="src || img" alt="" />
+        <img :src="img" alt="" />
       </div>
     </template>
   </div>
@@ -26,12 +26,10 @@ export default {
       default: ''
     }
   },
-  data() {
-    return {
-      src: "",
-    };
-  },
   methods: {
+    changeFile(){
+      this.$emit('click')
+    },
     async uploadFile(e) {
       if (!e.target.files[0]) return;
       const file = e.target.files[0];
@@ -51,7 +49,7 @@ export default {
       const res = await fileUpload(fileData);
       if (res.code === 0 && res.data && res.data.fileId) {
         if (typeof this.onSuccess === "function") {
-          this.scr = res.data.fileUrl;
+          this.src = res.data.fileUrl;
           this.onSuccess(res.data);
         }
       } else {

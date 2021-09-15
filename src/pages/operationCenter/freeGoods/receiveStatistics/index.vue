@@ -38,26 +38,33 @@
 </template>
 
 <script>
+const oderStatus = {
+  1: '待发货',
+  2: '已发货',
+  3: '已收货',
+  4: '已完成'
+}
 const typeData = [
   {
     label: "待发货",
-    value: 1,
+    id: 1,
   },
   {
     label: "已发货",
-    value: 2,
+    id: 2,
   },
   {
     label: "已收货",
-    value: 3,
+    id: 3,
   },
   {
     label: "已完成",
-    value: 4,
+    id: 4,
   },
 ];
 import Header from "./../com/Header";
-import { getMFActivityTaskListByPage } from "@/api/freeGoods";
+import dayjs from 'dayjs';
+import {  getMFActivityTaskReceiveListByPage } from "@/api/freeGoods";
 export default {
   components: {
     "goods-header": Header,
@@ -76,54 +83,57 @@ export default {
           key: "activityTitle",
           align: "center",
           title: "完成时间",
+          render(h,params) {
+            return h('span',dayjs(params.row.completeTime).format('YYYY-MM-DD HH:mm:ss'))
+          }
         },
         {
-          key: "parentActivityTitle",
+          key: "memberName",
           align: "center",
           title: "昵称",
         },
         {
-          key: "activityBeginDt",
+          key: "shipMobile",
           align: "center",
           title: "手机号",
         },
         {
-          key: "activityEndDt",
+          key: "activityPlayerName",
           align: "center",
           title: "支持选手",
         },
         {
-          key: "activityEndDt",
+          key: "activityName",
           align: "center",
           title: "所属活动",
         },
         {
-          key: "activityEndDt",
+          key: "sn",
           align: "center",
           title: "订单号",
         },
         {
-          key: "activityEndDt",
+          key: "goodsName",
           align: "center",
           title: "商品名称",
         },
         {
-          key: "activityEndDt",
+          key: "orderStatus",
           align: "center",
-          title: "状态",
+          title: "状态"
         },
       ],
       table: {
         // 未发布
-        data: [{ status: 1 }, { status: 2 }, { status: 3 }],
+        data: [],
         total: 0,
         loading: false,
         tableQuery: {
           page: 1,
           size: 10,
-          status: "",
+          activityId: this.$route.query.activityId,
           qryCode: "",
-          activityStateId: this.stateType,
+          orderStateId: '', // 订单状态
         },
       },
       search: {
@@ -170,12 +180,23 @@ export default {
       });
       // 跳转统计页面
     },
-    async getMFActivityTaskListByPage() {
+    async getMFActivityTaskReceiveListByPage() {
       // 获取列表
       this.table.loading = true;
       try {
-        const res = await getMFActivityTaskListByPage(this.table.tableQuery);
+        const query = {
+           page: this.table.tableQuery.page,
+           size: this.table.tableQuery.size,
+           activityId: this.$route.query.activityId,
+           qryCode: this.table.tableQuery.qryCode,
+          orderStatus: oderStatus[this.table.tableQuery.orderStateId]
+        }
+        const res = await getMFActivityTaskReceiveListByPage(query);
+        console.log('列表-res:', res, query)
         if (res.code === 0 && res.data) {
+          const {  records, total } = res.data
+          this.table.total = total
+          this.table.data = records
         }
       } finally {
         this.table.loading = false;
@@ -185,21 +206,23 @@ export default {
       // 分页
       this.table.tableQuery.page = currentPage;
       this.table.tableQuery.size = pageSize;
-      this.getMFActivityTaskListByPage();
+      this.getMFActivityTaskReceiveListByPage();
     },
     searchFilter(data, { btnType }) {
       // 筛选
       if (btnType === "reset") {
         this.table.tableQuery.qryCode = "";
+        this.table.tableQuery.orderStateId = ''
         this.search.search.name = "";
         this.search.search.status = "";
       }
       if (btnType === "search") {
+        console.log('data:', data)
         this.table.tableQuery.qryCode = data.name;
-        this.table.tableQuery.status = data.status;
+        this.table.tableQuery.orderStateId = data.status;
       }
       this.table.tableQuery.page = 1;
-      this.getMFActivityTaskListByPage();
+      this.getMFActivityTaskReceiveListByPage();
     },
     getContentH() {
       let datas = [];
@@ -228,6 +251,7 @@ export default {
     },
   },
   mounted() {
+     this.getMFActivityTaskReceiveListByPage()
     // 动态设置子组件高度
     this.$nextTick(() => {
       this.getContentH();
