@@ -172,3 +172,21 @@ export function getMFActivityTaskReceiveListByPage(data) {
     method: 'post'
   })
 }
+
+// 活动详情
+export function getMFActivityDetail(data) {
+  return request({
+    url: '/freeApi/MFActivity/queryMFActivityDetail',
+    data,
+    method: 'post'
+  })
+}
+
+// 编辑活动- 保存
+export function updateMFActivity(data) {
+  return request({
+    url: '/freeApi/MFActivity/updateMFActivity',
+    data,
+    method: 'post'
+  })
+}

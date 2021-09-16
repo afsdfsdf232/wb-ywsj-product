@@ -25,13 +25,13 @@
       >
         <template slot-scope="{ row }" slot="option">
           <template v-if="row.activityTaskStateId === 2">
-            <Button
+            <!-- <Button
               type="primary"
               size="small"
               class="table-btn"
               @click.stop="taskDetail(row)"
               >任务详情</Button
-            >
+            > -->
           </template>
           <template v-if="row.activityTaskStateId === 1">
             <Button
@@ -49,14 +49,14 @@
               @click.stop="removeTask(row)"
               >移除任务</Button
             >
-            <span class="p-lr4 color-blue">|</span>
+            <!-- <span class="p-lr4 color-blue">|</span>
             <Button
               type="primary"
               size="small"
               class="table-btn"
               @click.stop="taskDetail(row)"
               >任务详情</Button
-            >
+            > -->
           </template>
           <template v-if="row.activityTaskStateId === 3">
             <Button
@@ -66,14 +66,14 @@
               @click.stop="removeTask(row)"
               >移除任务</Button
             >
-            <span class="p-lr4 color-blue">|</span>
+            <!-- <span class="p-lr4 color-blue">|</span>
             <Button
               type="primary"
               size="small"
               class="table-btn"
               @click.stop="taskDetail(row)"
               >任务详情</Button
-            >
+            > -->
           </template>
         </template>
       </Table>
@@ -182,7 +182,7 @@ export default {
         {
           slot: "option",
           align: "left",
-          width: 260,
+          width: 200,
           title: "操作",
         },
       ],

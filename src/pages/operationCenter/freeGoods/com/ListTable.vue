@@ -344,7 +344,7 @@ export default {
     },
     editGoods(row) {
       // 编辑活动
-       this.$router.push({name:'free-Goods-add',query: {type:'add', ...row}})
+       this.$router.push({name:'free-Goods-add',query: {type:'edit', ...row}})
     }
    
   },

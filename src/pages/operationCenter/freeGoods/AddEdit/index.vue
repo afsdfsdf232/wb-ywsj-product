@@ -2,8 +2,9 @@
   <div class="container">
     <goods-header title="新建活动">
       <template #right>
-        <Button type="primary" @click="saveActivity">保存</Button>
-        <Button class="m16" type="primary" @click="release">发布</Button>
+        <Button type="primary" @click="saveActivity" v-if="pageType === 'add'">保存</Button>
+        <Button class="m16" type="primary" @click="release" v-if="pageType === 'add'">发布</Button>
+        <Button class="m16" type="primary" @click="updateMFActivity" v-if="pageType === 'edit'">保存</Button>
         <Button @click="back">返回</Button>
       </template>
     </goods-header>
@@ -423,7 +424,9 @@ import {
   queryVoteActivityList,
   getGoodsTypesList,
   getGoodsCategoryList,
-  getSupportGoodsList
+  getSupportGoodsList,
+  getMFActivityDetail,
+  updateMFActivity
 } from "@/api/freeGoods";
 import Header from "./../com/Header";
 const typeData = [];
@@ -463,6 +466,7 @@ export default {
   name: "addedit",
   data() {
     return {
+      pageType: 'add',
       mallGoodsFilterList: [], // 最终的选择列表
       mallGoodsList: [], // 商城商品列表
       mallGoodsSeleteList: [], // 已经选择的商城商品--展示
@@ -604,8 +608,23 @@ export default {
     this.getGoodsTypesList();
     this.getGoodsCategoryList();
     this.getSupportGoodsList()
+    // 编辑获取,详情
+    if (this.$route.query.type === 'edit') {
+      this.pageType = 'edit'
+      this.getMFActivityDetail()
+    }
+    
   },
   methods: {
+    async getMFActivityDetail() {
+      const res = await getMFActivityDetail({activityId: this.$route.query.activityId})
+      if (res.code === 0 && res.data.activityId) {
+        const { activityBeginTime, activityEndTime} = res.data;
+        this.formValidate = Object.assign({},this.formValidate, res.data)
+        this.formValidate.date = [activityBeginTime,activityEndTime]
+      }
+      console.log('detail:', res)
+    },
     getSearchRest() {},
     searchFilter(...data) {
       console.log("data:", ...data);
@@ -816,6 +835,56 @@ export default {
       });
       // 保存活动
     },
+    updateMFActivity() {
+      // 编辑保存
+        this.$refs["formValidate"].validate( async (valid) => {
+        if (valid) {
+          const query = {
+            ...this.formValidate,
+            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
+            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
+            type: 1,
+          };
+          console.log('query', query);
+          if (query.activityTasks.length === 0) {
+            this.$Message.error('请选择商品')
+            return
+          }
+          for(let i=0; i<query.activityTasks.length; i++) {
+            if (query.activityTasks[i].goodsNum<=0) {
+              this.$Message.error('请输入商品数量')
+              return
+            }
+            if (!query.activityTasks[i].taskBeginDt) {
+              this.$Message.error('请选择任务开始时间')
+              return
+            }
+               if (!query.activityTasks[i].taskEndDt) {
+              this.$Message.error('请选择任务结束时间')
+              return
+            }
+            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
+            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+            
+          }
+          // 验证是否存在未填写数量和日期的商品
+          const newQuery = new FormData()
+          for(let key in query) {
+            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
+          }
+          console.log('newQuery；',newQuery)
+          const res = await updateMFActivity(newQuery);
+          if (res.code === 0) {
+            this.$Message.success("保存成功");
+            setTimeout(() => {
+              this.$router.go(-1);
+            }, 2000);
+          } else {
+            this.$Message.error(res.data.message || res.msg || "操作失败");
+          }
+        }
+      });
+    },
     back() {
       // 返回
       this.$router.go(-1);
@@ -856,15 +925,25 @@ export default {
       console.log("res-店铺分组:", res);
     },
     setRule(item) {
+      if (item.ruleDetail && item.ruleDetail.length>0) {
+        const {activityRule,eachNum,ruleDefId,ruleId,voteNum } = item.ruleDetail[0]
+        this.ruleSettingsModal.activityRule = activityRule
+        this.ruleSettingsModal.eachNum = eachNum
+        this.ruleSettingsModal.ruleDefId = ruleDefId
+        this.ruleSettingsModal.ruleId = ruleId
+        this.ruleSettingsModal.voteNum = voteNum
+      }
+      
       this.ruleSettingsModal.goodsId = item.goodsId
       this.ruleSettingsModal.show = true;
+      console.log('item:', item)
     },
     changeRule() {
       this.ruleSettingsModal.voteNum = 0
       this.ruleSettingsModal.eachNum = 0
     },
     addGoodsRuleOk(){
-      const {activityRule,goodsId,ruleDefId,eachNum,voteNum } = this.ruleSettingsModal
+      const {activityRule,goodsId,ruleDefId,eachNum,voteNum, ruleId='' } = this.ruleSettingsModal
       const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
       if(index> -1) {
         const newRuleDetail = {
@@ -872,6 +951,7 @@ export default {
           activityRule,
           eachNum,
           voteNum,
+          ruleId,
           ruleName: relues[ruleDefId]
         }
         this.formValidate.activityTasks[index].ruleDetail = [newRuleDetail]
