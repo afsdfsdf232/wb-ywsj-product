@@ -289,7 +289,7 @@ export default {
       this.$router.push({
         name: "free-Goods-editTask",
         query: {
-          ...row,
+          activityTaskId: row.activityTaskId
         },
       });
     },

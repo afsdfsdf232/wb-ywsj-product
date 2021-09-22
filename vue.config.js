@@ -34,7 +34,7 @@ module.exports = {
                 }
             },
             '/freeApi': {
-                target: 'http://mbk6wq.natappfree.cc/', // 免费领取活动模块服务器地址
+                target: 'http://m7a2xz.natappfree.cc/', // 免费领取活动模块服务器地址
                 ws: true,  // 代理websockets
                 changeOrigin: true, // 虚拟的站点需要更管origin
                 pathRewrite: {   // 重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'

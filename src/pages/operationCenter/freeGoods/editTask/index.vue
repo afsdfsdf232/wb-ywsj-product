@@ -33,7 +33,7 @@
                 <DatePicker
                   v-model="baseInfo.taskBeginDt"
                   format="yyyy-MM-dd HH:mm:ss "
-                  type="date"
+                  type="datetime"
                   placeholder="请选择任务开始时间..."
                 ></DatePicker>
               </div>
@@ -41,7 +41,7 @@
                 <DatePicker
                   v-model="baseInfo.taskEndDt"
                   format="yyyy-MM-dd HH:mm:ss "
-                  type="date"
+                  type="datetime"
                   placeholder="请选择任务结束时间..."
                 ></DatePicker>
               </div>
@@ -145,7 +145,7 @@
             <div v-if="advertisingSettingsModal.state === 5">
               <p>图片</p>
               <div>
-                <uploadFile :img="advertInfo['5'].advertId" :on-success="uploadSuccess" />
+                <uploadFile  :img="advertInfo['5'].fileUrl" @click="changeFile('5')" :on-success="uploadSuccess" />
               </div>
               <p style="margin: 8px 0">
                 注意：上传图片尺寸为750X1334px，大小不能超过2M
@@ -160,7 +160,7 @@
             <div v-if="advertisingSettingsModal.state === 6">
               <p>logo</p>
               <div>
-                <uploadFile :on-success="uploadSuccess" />
+                <uploadFile  :img="advertInfo['6'].fileUrl" @click="changeFile('6')" :on-success="uploadSuccess" />
               </div>
               <div class="input-content" style="margin: 20px 0">
                 <div>
@@ -184,7 +184,7 @@
             <div v-if="advertisingSettingsModal.state === 7">
               <p>图片</p>
               <div>
-                <uploadFile :on-success="uploadSuccess" />
+                <uploadFile :img="advertInfo['7'].fileUrl" @click="changeFile('7')" :on-success="uploadSuccess" />
               </div>
               <p style="margin: 8px 0">
                 注意：上传图片尺寸为750X1334px，大小不能超过2M
@@ -230,6 +230,7 @@ export default {
   name: "addedit",
   data() {
     return {
+      goodsInfo: {},
       editorOption: {
         height: 600,
       },
@@ -279,6 +280,7 @@ export default {
         // 广告设置弹窗
         show: false,
         state: 5,
+        item: -10
       },
     };
   },
@@ -341,55 +343,84 @@ export default {
         activityTaskId: this.$route.query.activityTaskId,
       });
       if (res.code === 0 && res.data) {
+        this.goodsInfo = res.data;
         const {
           taskBeginDt,
           activityTaskId,
+          activityTaskStateId,
+          activityTaskStateName,
           goodsNum,
           taskEndDt,
-          rules,
-          advertVOs,
+          goodsName,
+          sku,
+          activityId,
+          ruleDetail,
+          advertDetail,
+          dbState,
+          dbStateDt,
+          createPartyId,
+          goodsId,
+          receiveGoodsNum,
+          skuId,
+          surplusGoodsNum
         } = res.data;
         // 基础信息
+        this.baseInfo.activityId = activityId
+        this.baseInfo.goodsName = goodsName
+        this.baseInfo.activityTaskStateName = activityTaskStateName
+        this.baseInfo.activityTaskStateId = activityTaskStateId
+        this.baseInfo.createPartyId = createPartyId
+        this.baseInfo.dbState = dbState
+        this.baseInfo.sku = sku
+        this.baseInfo.goodsId = goodsId
+        this.baseInfo.dbStateDt = dbStateDt
         this.baseInfo.taskBeginDt = taskBeginDt;
         this.baseInfo.activityTaskId = activityTaskId;
         this.baseInfo.goodsNum = goodsNum;
         this.baseInfo.taskEndDt = taskEndDt;
+        this.baseInfo.skuId = skuId
+        this.baseInfo.receiveGoodsNum = receiveGoodsNum
+        this.baseInfo.surplusGoodsNum = surplusGoodsNum
         // 规则设置信息
-        if (rules && rules.length > 0) {
-          const ruleItem = rules.fileter((item) => item.ruleDefId !== 4);
+        if (ruleDetail && ruleDetail.length > 0) {
+          // ruleInfo
+          const ruleItem = ruleDetail.filter((item) => item.ruleDefId !== 4);
+          console.log('ruleItem:', ruleItem)
           if (ruleItem && ruleItem.length > 0) {
-            const { ruleId, voteNum, eachNum, ruleDefId } = ruleItem[0];
+            const { ruleId, voteNum, eachNum, ruleDefId, activityRule, ruleEngineTypeId, ruleEngineTypeName } = ruleItem[0];
+            this.ruleInfo.ruleEngineTypeId = ruleEngineTypeId
+            this.ruleInfo.ruleEngineTypeName = ruleEngineTypeName
             this.ruleInfo.ruleId = ruleId;
             //  票数
             this.ruleInfo.voteNum = voteNum;
             // 人数
             this.ruleInfo.eachNum = eachNum;
-            this.ruleInfo.ruleDefId = Number(ruleDefId);
+            this.ruleInfo.ruleDefId = ruleDefId;
+            this.ruleInfo.activityRule = activityRule
             this.ruleInfo.activityTaskId = activityTaskId;
           }
         }
 
         // 广告设置
-        if (advertVOs && advertVOs.length > 0) {
-          const {
-            advertAreaId,
-            fileId,
-            advertTitle,
-            linkUrl,
-            advertDesc,
-            advertId,
-          } = advertVOs[0];
-          this.advertInfo.advertAreaId = advertAreaId;
-          this.advertInfo.fileId = fileId;
-          this.advertInfo.advertTitle = advertTitle;
-          this.advertInfo.linkUrl = linkUrl;
-          this.advertInfo.advertDesc = advertDesc;
-          this.advertInfo.advertId = advertId;
+        if (advertDetail && advertDetail.length > 0) {
+          for(let i=0; i<advertDetail.length; i++) {
+            const {advertDesc,advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId,objectId, objectTypeId} = advertDetail[i]
+            const newobj = {
+              advertDesc,advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId,objectId, objectTypeId
+            }
+            this.advertInfo[advertDetail[i].advertAreaId] = Object.assign({},this.advertInfo[advertDetail[i].advertAreaId], newobj)
+          }
         }
       }
       console.log("res:", res);
     },
-    uploadSuccess(data) {
+    changeFile(index) {
+       this.advertisingSettingsModal.item = index
+    },
+    uploadSuccess(file) {
+      const {fileId,fileUrl } = file
+      this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
+      this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
       // 图片上传成功
       // 判断广告类型
     },
@@ -424,19 +455,19 @@ export default {
     border-top: 1px solid #e3e8ee;
   }
   .w283 {
-    min-width: 20%;
+    width: 20%;
     text-align: center;
   }
   .w249 {
-    min-width: 18%;
+    width: 18%;
     text-align: center;
   }
   .w300 {
-    min-width: 22%;
+    width: 22%;
     text-align: center;
   }
   .w236 {
-    width: 17%;
+    width: 26%;
     text-align: center;
   }
   .w200 {

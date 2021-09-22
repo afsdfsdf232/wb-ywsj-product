@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <goods-header title="新建活动">
+    <goods-header :title="pageType === 'add'?'新建活动':'编辑活动'">
       <template #right>
         <Button type="primary" @click="saveActivity" v-if="pageType === 'add'">保存</Button>
         <Button class="m16" type="primary" @click="release" v-if="pageType === 'add'">发布</Button>
@@ -27,6 +27,7 @@
           </FormItem>
           <FormItem label="活动时间" prop="date">
             <DatePicker
+              :disabled="pageType === 'edit'"
               type="datetimerange"
               format="yyyy-MM-dd HH:mm"
               v-model="formValidate.date"
@@ -38,6 +39,7 @@
             <Select
               v-model="formValidate.parentActivityId"
               placeholder="请选择活动"
+              :disabled="pageType === 'edit'"
               clearable
               style="width: 450px"
             >
@@ -91,7 +93,7 @@
                   class="input-s"
                   v-model="item.taskBeginDt"
                   format="yyyy-MM-dd HH:mm:ss "
-                  type="date"
+                  type="datetime"
                   placeholder="任务开始时间..."
                 ></DatePicker>
               </div>
@@ -100,7 +102,7 @@
                   class="input-s"
                   v-model="item.taskEndDt"
                   format="yyyy-MM-dd HH:mm:ss "
-                  type="date"
+                  type="datetime"
                   placeholder="任务结束时间..."
                 ></DatePicker>
               </div>
@@ -327,7 +329,7 @@
       width="50%"
       :mask-closable="false"
       @on-ok="advertisingOk"
-      title="规则设置"
+      title="广告设置"
       @on-cancel="addGoodsCancel"
     >
       <div class="p-lr30">
@@ -907,7 +909,6 @@ export default {
           }
           
         });
-        // this.investmentCommodities = res.data.data;
       }
       console.log("res-goods-type:", res);
     },
@@ -915,7 +916,7 @@ export default {
       // 获取招商商品
       const res = await getSupportGoodsList({})
       if(res.code === 0 && res.data) {
-        this.investmentCommodities = res.data || []
+        this.investmentCommodities = JSON.parse(JSON.stringify(res.data || []))
       }
       console.log('招商商品;', res)
     },
@@ -936,7 +937,6 @@ export default {
       
       this.ruleSettingsModal.goodsId = item.goodsId
       this.ruleSettingsModal.show = true;
-      console.log('item:', item)
     },
     changeRule() {
       this.ruleSettingsModal.voteNum = 0
@@ -973,15 +973,60 @@ export default {
       if (index> -1) {
         this.formValidate.activityTasks[index].advertDetail = adverList
       }
-      console.log('advertInfo advertisingSettingsModal:', this.advertInfo, )
     },
     uploadSuccess(file){
-      console.log('file:', file)
       const {fileId,fileUrl } = file
       this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
       this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
     },
     setAdvert(item) {
+      this.advertisingSettingsModal.goodsId = item.goodsId
+      const advertDetail = item.advertDetail
+      if (advertDetail && advertDetail.length>0) {
+        for(let i=0; i<advertDetail.length; i++) {
+          const { 
+            advertDesc, 
+            advertId, 
+            advertStateId,
+            advertTitle,
+            createPartyId,
+            dbState ,
+            dbStateDt, 
+            fileId, 
+            fileName,
+            fileUrl,
+            linkUrl,
+            logoPictureId,
+            objectId,
+            objectTypeId
+            } = advertDetail[i]
+            const newOnj = {
+               advertDesc, 
+            advertId, 
+            advertStateId,
+            advertTitle,
+            createPartyId,
+            dbState ,
+            dbStateDt, 
+            fileId, 
+            fileName,
+            fileUrl,
+            linkUrl,
+            logoPictureId,
+            objectId,
+            objectTypeId
+            }
+          this.advertInfo[advertDetail[i].advertAreaId] = newOnj
+        }
+      } else {
+        for(let key in this.advertInfo) {
+          for(let ckey in this.advertInfo[key]) {
+            if (ckey !== 'advertAreaId') {
+              this.advertInfo[key][ckey] = ''
+            }
+          }
+        }
+      }
       this.advertisingSettingsModal.goodsId = item.goodsId
       this.advertisingSettingsModal.show = true;
     },
