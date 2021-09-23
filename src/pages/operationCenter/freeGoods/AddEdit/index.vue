@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div class="container">
     <goods-header :title="pageType === 'add'?'新建活动':'编辑活动'">
@@ -421,630 +422,623 @@
 </template>
 
 <script>
-import {
-  addMFActivity,
-  queryVoteActivityList,
-  getGoodsTypesList,
-  getGoodsCategoryList,
-  getSupportGoodsList,
-  getMFActivityDetail,
-  updateMFActivity
-} from "@/api/freeGoods";
-import Header from "./../com/Header";
-const typeData = [];
-import UploadFile from "./../com/UploadFile";
-import { quillEditor } from "vue-quill-editor";
-import dayjs from 'dayjs';
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-const validate = (rule, value, callback) => {
-  if (Array.isArray(value)) {
-    if (value[0].trim() && value[1].trim()) {
-      return callback();
-    }
-    return callback(rule.message);
-  }
-  return callback(rule.message);
-};
-const validateParent = (rule, value, callback) => {
-  if (value) {
-    return callback();
-  } else {
-    return callback(rule.message);
-  }
-};
-const relues = {
-  1: "为选手投票",
-  2: "邀请用户",
-  3: "既邀请用户且用户需投票",
-}
-const advertAreaIdTypes = {
-  5: "投票闪频广告",
-  6: "选手继续投票页弹框广告",
-  7: "分享链接",
-};
-export default {
-  name: "addedit",
-  data() {
-    return {
-      pageType: 'add',
-      mallGoodsFilterList: [], // 最终的选择列表
-      mallGoodsList: [], // 商城商品列表
-      mallGoodsSeleteList: [], // 已经选择的商城商品--展示
-      investmentCommoditiesFilterList: [],
-      investmentCommodities: [], // 招商商品列表
-      investmentCommoditiesSelete: [], // 已经选择的招商商品--展示
-      tableList: [],
-      addGoodsModal: {
-        show: false,
-      },
-      editorOption: {
-        height: 600,
-      },
-      ruleSettingsModal: {
-        goodsId: '',
-        show: false,
-        ruleDefId: 1,
-        voteNum: 0, // 票数
-        eachNum: 0, // 人数
-        activityRule: '' // 规则内容
-      },
-      advertInfo: { 
-        5: {
-          // 广告信息
-          advertAreaId: 5, // 广告类
-          fileId: "", // 广告图片
-          linkUrl: "", // 广告链接
-          fileUrl:''
-        },
-        6: {
-          // 广告信息
-          advertAreaId: 6, // 广告类型
-          fileId: "", // 广告图片id
-          advertTitle: "", // 广告标题
-          advertDesc: "", // 广告内容
-          fileUrl:''
-        },
-        7: {
-          // 广告信息
-          advertAreaId: 7, // 广告类型
-          fileId: "", // 广告图片id
-          linkUrl: "", // 广告链接
-          fileUrl:''
-        },
-      },
-      advertisingSettingsModal: {
-        // 广告设置弹窗
-        goodsId: '',
-        show: false,
-        state: 5,
-        item: 0
-      },
-      search: {
-        formBtn: [
-          // 搜索框按钮
-          {
-            label: "查询",
-            class: "normal-btn",
-            btnType: "search",
-            type: "primary",
-          },
-          { label: "重置", btnType: "reset", class: "normal-btn" },
-        ],
-        queryFieids: [
-          // 搜索框字段
-          {
-            type: "Select",
-            label: "店铺分组",
-            placeholder: "请选择",
-            prop: "type",
-            option: typeData,
-          },
-          {
-            type: "Input",
-            label: "搜索",
-            placeholder: "输入关键字",
-            prop: "name",
-          },
-        ],
-        search: {
-          // 搜索值
-          name: "", // 姓名
-          type: "", // 类型
-        },
-      },
-      filterLeft: {
-        name: "",
-        type: "",
-      },
-      filterRight: {
-        name: "",
-        type: "",
-      },
-      activityList: [],
-      formValidate: {
-        activityTitle: "",
-        type: "", // 1保存 2发布
-        date: "",
-        activityBeginTime: "", // 活动开始时间
-        activityEndTime: "", // 活动结束时间
-        parentActivityId: "",
-        activityTasks: [], // 任务列表
-      },
-      ruleValidate: {
-        activityTitle: [
-          {
-            required: true,
-            message: "请输入活动名称",
-            trigger: "blur",
-          },
-        ],
-        date: [
-          {
-            required: true,
-            type: "array",
-            message: "请选择活动时间",
-            trigger: ["change", "blur"],
-            validator: validate,
-          },
-        ],
-        parentActivityId: [
-          {
-            required: true,
-            message: "请选择关联活动",
-            trigger: "change",
-            validator: validateParent,
-          },
-        ],
-      },
+    import {
+        addMFActivity,
+        queryVoteActivityList,
+        getGoodsTypesList,
+        getGoodsCategoryList,
+        getSupportGoodsList,
+        getMFActivityDetail,
+        updateMFActivity
+    } from "@/api/freeGoods";
+    import Header from "./../com/Header";
+    import UploadFile from "./../com/UploadFile";
+    import { quillEditor } from "vue-quill-editor";
+    import dayjs from 'dayjs';
+    import "quill/dist/quill.core.css";
+    import "quill/dist/quill.snow.css";
+    import "quill/dist/quill.bubble.css";
+    const typeData = [];
+    const validate = (rule, value, callback) => {
+        if (Array.isArray(value)) {
+            if (value[0].trim() && value[1].trim()) {
+                return callback();
+            }
+            return callback(rule.message);
+        }
+        return callback(rule.message);
     };
-  },
-  components: {
-    "quill-editor": quillEditor,
-    "goods-header": Header,
-    uploadFile: UploadFile,
-  },
-  mounted() {
-    this.queryVoteActivityList();
-    this.getGoodsTypesList();
-    this.getGoodsCategoryList();
-    this.getSupportGoodsList()
-    // 编辑获取,详情
-    if (this.$route.query.type === 'edit') {
-      this.pageType = 'edit'
-      this.getMFActivityDetail()
-    }
-    
-  },
-  methods: {
-    async getMFActivityDetail() {
-      const res = await getMFActivityDetail({activityId: this.$route.query.activityId})
-      if (res.code === 0 && res.data.activityId) {
-        const { activityBeginTime, activityEndTime} = res.data;
-        this.formValidate = Object.assign({},this.formValidate, res.data)
-        this.formValidate.date = [activityBeginTime,activityEndTime]
-      }
-      console.log('detail:', res)
-    },
-    getSearchRest() {},
-    searchFilter(...data) {
-      console.log("data:", ...data);
-    },
-    handleSubmit(name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          this.$Message.success("Success!");
+    const validateParent = (rule, value, callback) => {
+        if (value) {
+            return callback();
         } else {
-          this.$Message.error("Fail!");
+            return callback(rule.message);
         }
-      });
-    },
-    handleReset(name) {
-      this.$refs[name].resetFields();
-    },
-    addGoods() {
-      // 打开弹窗选择商品
-      this.addGoodsModal.show = true;
-    },
-    changeProductInve(list) {
-      if (list.length === 0) {
-        this.investmentCommoditiesSelete = [];
-        return;
-      }
-      list.map((id) => {
-        const goods = this.investmentCommodities.find(
-          (item) => item.goodsId === id
-        );
-        const you = this.investmentCommoditiesSelete.find(
-          (item) => item.goodsId === id
-        );
-        if (goods && !you) {
-          this.investmentCommoditiesSelete.push(goods);
-        }
-      });
-      // 过滤掉没有选择的商品
-      this.investmentCommoditiesSelete.forEach((item, index) => {
-        if (list.indexOf(item.goodsId) === -1) {
-          this.investmentCommoditiesSelete.splice(index, 1);
-        }
-      });
-    },
-    changeProduct(list) {
-      if (list.length === 0) {
-        this.mallGoodsSeleteList = [];
-        return;
-      }
-      list.map((id) => {
-        const goods = this.mallGoodsList.find((item) => item.goodsId === id);
-        const you = this.mallGoodsSeleteList.find(
-          (item) => item.goodsId === id
-        );
-        if (goods && !you) {
-          this.mallGoodsSeleteList.push(goods);
-        }
-      });
-      // 过滤掉没有选择的商品
-      this.mallGoodsSeleteList.forEach((item, index) => {
-        if (list.indexOf(item.goodsId) === -1) {
-          this.mallGoodsSeleteList.splice(index, 1);
-        }
-      });
-    },
-    addGoodsOk() {
-      // 去除重复数据
-      const goods = Array.from(
-        new Set([
-          ...JSON.parse(JSON.stringify(this.mallGoodsFilterList)),
-          ...JSON.parse(JSON.stringify(this.investmentCommoditiesFilterList)),
-        ])
-      );
-      const productList = JSON.parse(
-        JSON.stringify([
-          ...JSON.parse(JSON.stringify(this.mallGoodsList)),
-          ...JSON.parse(JSON.stringify(this.investmentCommodities)),
-        ])
-      );
-      if (goods.length > 0 && productList.length > 0) {
-        goods.map((id) => {
-          const goodsItem = productList.find((item) => item.goodsId === id);
-          if (goodsItem) {
-            const { goodsId, skuId, goodsName } = goodsItem;
-            this.formValidate.activityTasks.push({
-              goodsId,
-              skuId,
-              sku: "",
-              goodsNum: 0,
-              goodsName,
-              taskBeginDt: "",
-              taskEndDt: "",
-              ruleDetail: [],
-              advertDetail: [],
-            });
-          }
-        });
-      }
-    },
-    addGoodsCancel() {},
-    async queryVoteActivityList() {
-      // 查询关联活动列表
-      const res = await queryVoteActivityList({});
-      if (res.code === 0 && res.data) {
-        console.log("res:", res);
-        this.activityList = res.data || [];
-      }
-    },
-    async release() {
-      // 发布活动
-        this.$refs["formValidate"].validate( async (valid) => {
-        if (valid) {
-          const query = {
-            ...this.formValidate,
-            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
-            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
-            type: 2,
-          };
-          console.log('query', query);
-          if (query.activityTasks.length === 0) {
-            this.$Message.error('请选择商品')
-            return
-          }
-          for(let i=0; i<query.activityTasks.length; i++) {
-            
-            if (query.activityTasks[i].goodsNum<=0) {
-              this.$Message.error('请输入商品数量')
-              return
-            }
-            if (!query.activityTasks[i].taskBeginDt) {
-              this.$Message.error('请选择任务开始时间')
-              return
-            }
-               if (!query.activityTasks[i].taskEndDt) {
-              this.$Message.error('请选择任务结束时间')
-              return
-            }
-            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
-            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
-            
-          }
-          // 验证是否存在未填写数量和日期的商品
-          console.log('query:',query)
-          const newQuery = new FormData()
-          for(let key in query) {
-            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
-          }
-          const res = await addMFActivity(newQuery);
-          if (res.code === 0) {
-            this.$Message.success("保存成功");
-            setTimeout(() => {
-              this.$router.go(-1);
-            }, 2000);
-          } else {
-            this.$Message.error(res.data.message || res.msg || "操作失败");
-          }
-        }
-      });
-    },
-    saveActivity() {
-      this.$refs["formValidate"].validate( async (valid) => {
-        console.log('valid:',valid)
-        if (valid) {
-          const query = {
-            ...this.formValidate,
-            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
-            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
-            type: 1,
-          };
-          console.log('query', query);
-          if (query.activityTasks.length === 0) {
-            this.$Message.error('请选择商品')
-            return
-          }
-          for(let i=0; i<query.activityTasks.length; i++) {
-            
-            if (query.activityTasks[i].goodsNum<=0) {
-              this.$Message.error('请输入商品数量')
-              return
-            }
-            if (!query.activityTasks[i].taskBeginDt) {
-              this.$Message.error('请选择任务开始时间')
-              return
-            }
-               if (!query.activityTasks[i].taskEndDt) {
-              this.$Message.error('请选择任务结束时间')
-              return
-            }
-            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
-            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
-            
-          }
-          // 验证是否存在未填写数量和日期的商品
-          console.log('query:',query)
-          const newQuery = new FormData()
-          for(let key in query) {
-            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
-          }
-          const res = await addMFActivity(newQuery);
-          if (res.code === 0) {
-            this.$Message.success("保存成功");
-            setTimeout(() => {
-              this.$router.go(-1);
-            }, 2000);
-          } else {
-            this.$Message.error(res.data.message || res.msg || "操作失败");
-          }
-        }
-      });
-      // 保存活动
-    },
-    updateMFActivity() {
-      // 编辑保存
-        this.$refs["formValidate"].validate( async (valid) => {
-        if (valid) {
-          const query = {
-            ...this.formValidate,
-            activityBeginTime: this.formValidate.date[0]?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss'): '',
-            activityEndTime: this.formValidate.date[1]? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss'): '',
-            type: 1,
-          };
-          console.log('query', query);
-          if (query.activityTasks.length === 0) {
-            this.$Message.error('请选择商品')
-            return
-          }
-          for(let i=0; i<query.activityTasks.length; i++) {
-            if (query.activityTasks[i].goodsNum<=0) {
-              this.$Message.error('请输入商品数量')
-              return
-            }
-            if (!query.activityTasks[i].taskBeginDt) {
-              this.$Message.error('请选择任务开始时间')
-              return
-            }
-               if (!query.activityTasks[i].taskEndDt) {
-              this.$Message.error('请选择任务结束时间')
-              return
-            }
-            query.activityTasks[i].taskBeginDt =dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss') 
-            query.activityTasks[i].taskEndDt =dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
-            
-          }
-          // 验证是否存在未填写数量和日期的商品
-          const newQuery = new FormData()
-          for(let key in query) {
-            newQuery.append(key, typeof query[key] === 'object'? JSON.stringify(query[key]): query[key] )
-          }
-          console.log('newQuery；',newQuery)
-          const res = await updateMFActivity(newQuery);
-          if (res.code === 0) {
-            this.$Message.success("保存成功");
-            setTimeout(() => {
-              this.$router.go(-1);
-            }, 2000);
-          } else {
-            this.$Message.error(res.data.message || res.msg || "操作失败");
-          }
-        }
-      });
-    },
-    back() {
-      // 返回
-      this.$router.go(-1);
-    },
-    async getGoodsTypesList() {
-      const res = await getGoodsTypesList({
-        page_no: 1,
-        page_size: 10,
-        goods_type: "NORMAL",
-        market_enable: 1,
-        is_auth: 1,
-      });
-      if (res.data && res.data.data && res.data.data.length > 0) {
-        this.mallGoodsList = res.data.data.map(item => {
-          return {
-            goodsId: item.goods_id,
-            skuId: item.sku_id,
-            goodsName: item.goods_name,
-            ...item,
-          }
-          
-        });
-      }
-      console.log("res-goods-type:", res);
-    },
-    async getSupportGoodsList() {
-      // 获取招商商品
-      const res = await getSupportGoodsList({})
-      if(res.code === 0 && res.data) {
-        this.investmentCommodities = JSON.parse(JSON.stringify(res.data || []))
-      }
-      console.log('招商商品;', res)
-    },
-    async getGoodsCategoryList() {
-      //  店铺分组
-      const res = await getGoodsCategoryList({});
-      console.log("res-店铺分组:", res);
-    },
-    setRule(item) {
-      if (item.ruleDetail && item.ruleDetail.length>0) {
-        const {activityRule,eachNum,ruleDefId,ruleId,voteNum } = item.ruleDetail[0]
-        this.ruleSettingsModal.activityRule = activityRule
-        this.ruleSettingsModal.eachNum = eachNum
-        this.ruleSettingsModal.ruleDefId = ruleDefId
-        this.ruleSettingsModal.ruleId = ruleId
-        this.ruleSettingsModal.voteNum = voteNum
-      }
-      
-      this.ruleSettingsModal.goodsId = item.goodsId
-      this.ruleSettingsModal.show = true;
-    },
-    changeRule() {
-      this.ruleSettingsModal.voteNum = 0
-      this.ruleSettingsModal.eachNum = 0
-    },
-    addGoodsRuleOk(){
-      const {activityRule,goodsId,ruleDefId,eachNum,voteNum, ruleId='' } = this.ruleSettingsModal
-      const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
-      if(index> -1) {
-        const newRuleDetail = {
-          ruleDefId,
-          activityRule,
-          eachNum,
-          voteNum,
-          ruleId,
-          ruleName: relues[ruleDefId]
-        }
-        this.formValidate.activityTasks[index].ruleDetail = [newRuleDetail]
-      }
-      
-      console.log('ruleSettingsModal:', this.ruleSettingsModal)
-    },
-    changeFile(val) {
-      console.log('val')
-      this.advertisingSettingsModal.item = val;
-    },
-    advertisingOk() {
-      const adverList = []
-      for(let key in this.advertInfo) {
-        adverList.push(this.advertInfo[key])
-      }
-      const goodsId = this.advertisingSettingsModal.goodsId
-      const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
-      if (index> -1) {
-        this.formValidate.activityTasks[index].advertDetail = adverList
-      }
-    },
-    uploadSuccess(file){
-      const {fileId,fileUrl } = file
-      this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
-      this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
-    },
-    setAdvert(item) {
-      this.advertisingSettingsModal.goodsId = item.goodsId
-      const advertDetail = item.advertDetail
-      if (advertDetail && advertDetail.length>0) {
-        for(let i=0; i<advertDetail.length; i++) {
-          const { 
-            advertDesc, 
-            advertId, 
-            advertStateId,
-            advertTitle,
-            createPartyId,
-            dbState ,
-            dbStateDt, 
-            fileId, 
-            fileName,
-            fileUrl,
-            linkUrl,
-            logoPictureId,
-            objectId,
-            objectTypeId
-            } = advertDetail[i]
-            const newOnj = {
-               advertDesc, 
-            advertId, 
-            advertStateId,
-            advertTitle,
-            createPartyId,
-            dbState ,
-            dbStateDt, 
-            fileId, 
-            fileName,
-            fileUrl,
-            linkUrl,
-            logoPictureId,
-            objectId,
-            objectTypeId
-            }
-          this.advertInfo[advertDetail[i].advertAreaId] = newOnj
-        }
-      } else {
-        for(let key in this.advertInfo) {
-          for(let ckey in this.advertInfo[key]) {
-            if (ckey !== 'advertAreaId') {
-              this.advertInfo[key][ckey] = ''
-            }
-          }
-        }
-      }
-      this.advertisingSettingsModal.goodsId = item.goodsId
-      this.advertisingSettingsModal.show = true;
-    },
-    deleteGoods(item) {
-      this.$Modal.confirm({
-        title: `确定删除该商品?`,
-        onOk: async () => {
-          console.log('item:', item)
-         const index = this.formValidate.activityTasks.findIndex(goods => goods.goodsId === item.goodsId)
-         if (index> -1) {
-           console.log(index)
-           this.formValidate.activityTasks.splice(index,1)
-         }
+    };
+    const relues = {
+        1: "为选手投票",
+        2: "邀请用户",
+        3: "既邀请用户且用户需投票"
+    }
+    // eslint-disable-next-line no-unused-vars
+    const advertAreaIdTypes = {
+        5: "投票闪频广告",
+        6: "选手继续投票页弹框广告",
+        7: "分享链接"
+    };
+    export default {
+        name: "addedit",
+        data () {
+            return {
+                pageType: 'add',
+                mallGoodsFilterList: [], // 最终的选择列表
+                mallGoodsList: [], // 商城商品列表
+                mallGoodsSeleteList: [], // 已经选择的商城商品--展示
+                investmentCommoditiesFilterList: [],
+                investmentCommodities: [], // 招商商品列表
+                investmentCommoditiesSelete: [], // 已经选择的招商商品--展示
+                tableList: [],
+                addGoodsModal: {
+                    show: false
+                },
+                editorOption: {
+                    height: 600
+                },
+                ruleSettingsModal: {
+                    goodsId: '',
+                    show: false,
+                    ruleDefId: 1,
+                    voteNum: 0, // 票数
+                    eachNum: 0, // 人数
+                    activityRule: '' // 规则内容
+                },
+                advertInfo: {
+                    5: {
+                        // 广告信息
+                        advertAreaId: 5, // 广告类
+                        fileId: "", // 广告图片
+                        linkUrl: "", // 广告链接
+                        fileUrl: ''
+                    },
+                    6: {
+                        // 广告信息
+                        advertAreaId: 6, // 广告类型
+                        fileId: "", // 广告图片id
+                        advertTitle: "", // 广告标题
+                        advertDesc: "", // 广告内容
+                        fileUrl: ''
+                    },
+                    7: {
+                        // 广告信息
+                        advertAreaId: 7, // 广告类型
+                        fileId: "", // 广告图片id
+                        linkUrl: "", // 广告链接
+                        fileUrl: ''
+                    }
+                },
+                advertisingSettingsModal: {
+                    // 广告设置弹窗
+                    goodsId: '',
+                    show: false,
+                    state: 5,
+                    item: 0
+                },
+                search: {
+                    formBtn: [
+                        // 搜索框按钮
+                        {
+                            label: "查询",
+                            class: "normal-btn",
+                            btnType: "search",
+                            type: "primary"
+                        },
+                        { label: "重置", btnType: "reset", class: "normal-btn" }
+                    ],
+                    queryFieids: [
+                        // 搜索框字段
+                        {
+                            type: "Select",
+                            label: "店铺分组",
+                            placeholder: "请选择",
+                            prop: "type",
+                            option: typeData
+                        },
+                        {
+                            type: "Input",
+                            label: "搜索",
+                            placeholder: "输入关键字",
+                            prop: "name"
+                        }
+                    ],
+                    search: {
+                        // 搜索值
+                        name: "", // 姓名
+                        type: "" // 类型
+                    }
+                },
+                filterLeft: {
+                    name: "",
+                    type: ""
+                },
+                filterRight: {
+                    name: "",
+                    type: ""
+                },
+                activityList: [],
+                formValidate: {
+                    activityTitle: "",
+                    type: "", // 1保存 2发布
+                    date: "",
+                    activityBeginTime: "", // 活动开始时间
+                    activityEndTime: "", // 活动结束时间
+                    parentActivityId: "",
+                    activityTasks: [] // 任务列表
+                },
+                ruleValidate: {
+                    activityTitle: [
+                        {
+                            required: true,
+                            message: "请输入活动名称",
+                            trigger: "blur"
+                        }
+                    ],
+                    date: [
+                        {
+                            required: true,
+                            type: "array",
+                            message: "请选择活动时间",
+                            trigger: ["change", "blur"],
+                            validator: validate
+                        }
+                    ],
+                    parentActivityId: [
+                        {
+                            required: true,
+                            message: "请选择关联活动",
+                            trigger: "change",
+                            validator: validateParent
+                        }
+                    ]
+                }
+            };
         },
-      });
-    },
-  },
-};
+        components: {
+            "quill-editor": quillEditor,
+            "goods-header": Header,
+            uploadFile: UploadFile
+        },
+        mounted () {
+            this.queryVoteActivityList();
+            this.getGoodsTypesList();
+            this.getGoodsCategoryList();
+            this.getSupportGoodsList()
+            // 编辑获取,详情
+            if (this.$route.query.type === 'edit') {
+                this.pageType = 'edit'
+                this.getMFActivityDetail()
+            }
+        },
+        methods: {
+            async getMFActivityDetail () {
+                const res = await getMFActivityDetail({ activityId: this.$route.query.activityId })
+                if (res.code === 0 && res.data.activityId) {
+                    const { activityBeginTime, activityEndTime } = res.data;
+                    this.formValidate = Object.assign({}, this.formValidate, res.data)
+                    this.formValidate.date = [activityBeginTime, activityEndTime]
+                }
+                console.log('detail:', res)
+            },
+            getSearchRest () {},
+            searchFilter (...data) {
+                console.log("data:", ...data);
+            },
+            handleSubmit (name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success("Success!");
+                    } else {
+                        this.$Message.error("Fail!");
+                    }
+                });
+            },
+            handleReset (name) {
+                this.$refs[name].resetFields();
+            },
+            addGoods () {
+                // 打开弹窗选择商品
+                this.addGoodsModal.show = true;
+            },
+            changeProductInve (list) {
+                if (list.length === 0) {
+                    this.investmentCommoditiesSelete = [];
+                    return;
+                }
+                list.map((id) => {
+                    const goods = this.investmentCommodities.find(
+                        (item) => item.goodsId === id
+                    );
+                    const you = this.investmentCommoditiesSelete.find(
+                        (item) => item.goodsId === id
+                    );
+                    if (goods && !you) {
+                        this.investmentCommoditiesSelete.push(goods);
+                    }
+                });
+                // 过滤掉没有选择的商品
+                this.investmentCommoditiesSelete.forEach((item, index) => {
+                    if (list.indexOf(item.goodsId) === -1) {
+                        this.investmentCommoditiesSelete.splice(index, 1);
+                    }
+                });
+            },
+            changeProduct (list) {
+                if (list.length === 0) {
+                    this.mallGoodsSeleteList = [];
+                    return;
+                }
+                list.map((id) => {
+                    const goods = this.mallGoodsList.find((item) => item.goodsId === id);
+                    const you = this.mallGoodsSeleteList.find(
+                        (item) => item.goodsId === id
+                    );
+                    if (goods && !you) {
+                        this.mallGoodsSeleteList.push(goods);
+                    }
+                });
+                // 过滤掉没有选择的商品
+                this.mallGoodsSeleteList.forEach((item, index) => {
+                    if (list.indexOf(item.goodsId) === -1) {
+                        this.mallGoodsSeleteList.splice(index, 1);
+                    }
+                });
+            },
+            addGoodsOk () {
+                // 去除重复数据
+                const goods = Array.from(
+                    new Set([
+                        ...JSON.parse(JSON.stringify(this.mallGoodsFilterList)),
+                        ...JSON.parse(JSON.stringify(this.investmentCommoditiesFilterList))
+                    ])
+                );
+                const productList = JSON.parse(
+                    JSON.stringify([
+                        ...JSON.parse(JSON.stringify(this.mallGoodsList)),
+                        ...JSON.parse(JSON.stringify(this.investmentCommodities))
+                    ])
+                );
+                if (goods.length > 0 && productList.length > 0) {
+                    goods.map((id) => {
+                        const goodsItem = productList.find((item) => item.goodsId === id);
+                        if (goodsItem) {
+                            const { goodsId, skuId, goodsName } = goodsItem;
+                            this.formValidate.activityTasks.push({
+                                goodsId,
+                                skuId,
+                                sku: "",
+                                goodsNum: 0,
+                                goodsName,
+                                taskBeginDt: "",
+                                taskEndDt: "",
+                                ruleDetail: [],
+                                advertDetail: []
+                            });
+                        }
+                    });
+                }
+            },
+            addGoodsCancel () {},
+            async queryVoteActivityList () {
+                // 查询关联活动列表
+                const res = await queryVoteActivityList({});
+                if (res.code === 0 && res.data) {
+                    console.log("res:", res);
+                    this.activityList = res.data || [];
+                }
+            },
+            async release () {
+                // 发布活动
+                this.$refs["formValidate"].validate(async (valid) => {
+                    if (valid) {
+                        const query = {
+                            ...this.formValidate,
+                            activityBeginTime: this.formValidate.date[0] ?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            activityEndTime: this.formValidate.date[1] ? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            type: 2
+                        };
+                        console.log('query', query);
+                        if (query.activityTasks.length === 0) {
+                            this.$Message.error('请选择商品')
+                            return
+                        }
+                        for (let i = 0; i < query.activityTasks.length; i++) {
+                            if (query.activityTasks[i].goodsNum <= 0) {
+                                this.$Message.error('请输入商品数量')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskBeginDt) {
+                                this.$Message.error('请选择任务开始时间')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskEndDt) {
+                                this.$Message.error('请选择任务结束时间')
+                                return
+                            }
+                            query.activityTasks[i].taskBeginDt = dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss')
+                            query.activityTasks[i].taskEndDt = dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        // 验证是否存在未填写数量和日期的商品
+                        console.log('query:', query)
+                        const newQuery = new FormData()
+                        for (let key in query) {
+                            newQuery.append(key, typeof query[key] === 'object' ? JSON.stringify(query[key]) : query[key])
+                        }
+                        const res = await addMFActivity(newQuery);
+                        if (res.code === 0) {
+                            this.$Message.success("保存成功");
+                            setTimeout(() => {
+                                this.$router.go(-1);
+                            }, 800);
+                        } else {
+                            this.$Message.error(res.data.message || res.msg || "操作失败");
+                        }
+                    }
+                });
+            },
+            saveActivity () {
+                this.$refs["formValidate"].validate(async (valid) => {
+                    console.log('valid:', valid)
+                    if (valid) {
+                        const query = {
+                            ...this.formValidate,
+                            activityBeginTime: this.formValidate.date[0] ?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            activityEndTime: this.formValidate.date[1] ? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            type: 1
+                        };
+                        console.log('query', query);
+                        if (query.activityTasks.length === 0) {
+                            this.$Message.error('请选择商品')
+                            return
+                        }
+                        for (let i = 0; i < query.activityTasks.length; i++) {
+                            if (query.activityTasks[i].goodsNum <= 0) {
+                                this.$Message.error('请输入商品数量')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskBeginDt) {
+                                this.$Message.error('请选择任务开始时间')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskEndDt) {
+                                this.$Message.error('请选择任务结束时间')
+                                return
+                            }
+                            query.activityTasks[i].taskBeginDt = dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss')
+                            query.activityTasks[i].taskEndDt = dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        // 验证是否存在未填写数量和日期的商品
+                        console.log('query:', query)
+                        const newQuery = new FormData()
+                        for (let key in query) {
+                            newQuery.append(key, typeof query[key] === 'object' ? JSON.stringify(query[key]) : query[key])
+                        }
+                        const res = await addMFActivity(newQuery);
+                        if (res.code === 0) {
+                            this.$Message.success("保存成功");
+                            setTimeout(() => {
+                                this.$router.go(-1);
+                            }, 800);
+                        } else {
+                            this.$Message.error(res.data.message || res.msg || "操作失败");
+                        }
+                    }
+                });
+                // 保存活动
+            },
+            updateMFActivity () {
+                // 编辑保存
+                this.$refs["formValidate"].validate(async (valid) => {
+                    if (valid) {
+                        const query = {
+                            ...this.formValidate,
+                            activityBeginTime: this.formValidate.date[0] ?  dayjs(this.formValidate.date[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            activityEndTime: this.formValidate.date[1] ? dayjs(this.formValidate.date[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+                            type: 1
+                        };
+                        if (query.activityTasks.length === 0) {
+                            this.$Message.error('请选择商品')
+                            return
+                        }
+                        for (let i = 0; i < query.activityTasks.length; i++) {
+                            if (query.activityTasks[i].goodsNum <= 0) {
+                                this.$Message.error('请输入商品数量')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskBeginDt) {
+                                this.$Message.error('请选择任务开始时间')
+                                return
+                            }
+                            if (!query.activityTasks[i].taskEndDt) {
+                                this.$Message.error('请选择任务结束时间')
+                                return
+                            }
+                            query.activityTasks[i].taskBeginDt = dayjs(query.activityTasks[i].taskBeginDt).format('YYYY-MM-DD HH:mm:ss')
+                            query.activityTasks[i].taskEndDt = dayjs(query.activityTasks[i].taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        // 验证是否存在未填写数量和日期的商品
+                        const newQuery = new FormData()
+                        for (let key in query) {
+                            newQuery.append(key, typeof query[key] === 'object' ? JSON.stringify(query[key]) : query[key])
+                        }
+                        console.log('newQuery；', newQuery, query)
+                        const res = await updateMFActivity(newQuery);
+                        if (res.code === 0) {
+                            this.$Message.success("保存成功");
+                            setTimeout(() => {
+                                this.$router.go(-1);
+                            }, 800);
+                        } else {
+                            this.$Message.error(res.data.message || res.msg || "操作失败");
+                        }
+                    }
+                });
+            },
+            back () {
+                // 返回
+                this.$router.go(-1);
+            },
+            async getGoodsTypesList () {
+                const res = await getGoodsTypesList({
+                    page_no: 1,
+                    page_size: 10,
+                    goods_type: "NORMAL",
+                    market_enable: 1,
+                    is_auth: 1
+                });
+                if (res.data && res.data.data && res.data.data.length > 0) {
+                    this.mallGoodsList = res.data.data.map(item => {
+                        return {
+                            goodsId: item.goods_id,
+                            skuId: item.sku_id,
+                            goodsName: item.goods_name,
+                            ...item
+                        }
+                    });
+                }
+                console.log("res-goods-type:", res);
+            },
+            async getSupportGoodsList () {
+                // 获取招商商品
+                const res = await getSupportGoodsList({})
+                if (res.code === 0 && res.data) {
+                    this.investmentCommodities = JSON.parse(JSON.stringify(res.data || []))
+                }
+                console.log('招商商品;', res)
+            },
+            async getGoodsCategoryList () {
+                //  店铺分组
+                const res = await getGoodsCategoryList({});
+                console.log("res-店铺分组:", res);
+            },
+            setRule (item) {
+                if (item.ruleDetail && item.ruleDetail.length > 0) {
+                    const { activityRule, eachNum, ruleDefId, ruleId, voteNum } = item.ruleDetail[0]
+                    this.ruleSettingsModal.activityRule = activityRule
+                    this.ruleSettingsModal.eachNum = eachNum
+                    this.ruleSettingsModal.ruleDefId = ruleDefId
+                    this.ruleSettingsModal.ruleId = ruleId
+                    this.ruleSettingsModal.voteNum = voteNum
+                }
+
+                this.ruleSettingsModal.goodsId = item.goodsId
+                this.ruleSettingsModal.show = true;
+            },
+            changeRule () {
+                this.ruleSettingsModal.voteNum = 0
+                this.ruleSettingsModal.eachNum = 0
+            },
+            addGoodsRuleOk () {
+                const { activityRule, goodsId, ruleDefId, eachNum, voteNum, ruleId = '' } = this.ruleSettingsModal
+                const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
+                if (index > -1) {
+                    const newRuleDetail = {
+                        ruleDefId,
+                        activityRule,
+                        eachNum,
+                        voteNum,
+                        ruleId,
+                        ruleName: relues[ruleDefId]
+                    }
+                    this.formValidate.activityTasks[index].ruleDetail = [newRuleDetail]
+                }
+
+                console.log('ruleSettingsModal:', this.ruleSettingsModal)
+            },
+            changeFile (val) {
+                console.log('val')
+                this.advertisingSettingsModal.item = val;
+            },
+            advertisingOk () {
+                const adverList = []
+                for (let key in this.advertInfo) {
+                    adverList.push(this.advertInfo[key])
+                }
+                const goodsId = this.advertisingSettingsModal.goodsId
+                const index = this.formValidate.activityTasks.findIndex(item => item.goodsId === goodsId)
+                if (index > -1) {
+                    this.formValidate.activityTasks[index].advertDetail = adverList
+                }
+            },
+            uploadSuccess (file) {
+                const { fileId, fileUrl } = file
+                this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
+                this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
+            },
+            setAdvert (item) {
+                this.advertisingSettingsModal.goodsId = item.goodsId
+                const advertDetail = item.advertDetail
+                if (advertDetail && advertDetail.length > 0) {
+                    for (let i = 0; i < advertDetail.length; i++) {
+                        const {
+                            advertDesc,
+                            advertId,
+                            advertStateId,
+                            advertTitle,
+                            createPartyId,
+                            dbState,
+                            dbStateDt,
+                            fileId,
+                            fileName,
+                            fileUrl,
+                            linkUrl,
+                            logoPictureId,
+                            objectId,
+                            objectTypeId
+                        } = advertDetail[i]
+                        const newOnj = {
+                            advertDesc,
+                            advertId,
+                            advertStateId,
+                            advertTitle,
+                            createPartyId,
+                            dbState,
+                            dbStateDt,
+                            fileId,
+                            fileName,
+                            fileUrl,
+                            linkUrl,
+                            logoPictureId,
+                            objectId,
+                            objectTypeId
+                        }
+                        this.advertInfo[advertDetail[i].advertAreaId] = newOnj
+                    }
+                } else {
+                    for (let key in this.advertInfo) {
+                        for (let ckey in this.advertInfo[key]) {
+                            if (ckey !== 'advertAreaId') {
+                                this.advertInfo[key][ckey] = ''
+                            }
+                        }
+                    }
+                }
+                this.advertisingSettingsModal.goodsId = item.goodsId
+                this.advertisingSettingsModal.show = true;
+            },
+            deleteGoods (item) {
+                this.$Modal.confirm({
+                    title: `确定删除该商品?`,
+                    onOk: async () => {
+                        console.log('item:', item)
+                        const index = this.formValidate.activityTasks.findIndex(goods => goods.goodsId === item.goodsId)
+                        if (index > -1) {
+                            console.log(index)
+                            this.formValidate.activityTasks.splice(index, 1)
+                        }
+                    }
+                });
+            }
+        }
+    };
 </script>
 
 <style lang="less" scoped>

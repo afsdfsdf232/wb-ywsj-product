@@ -2,7 +2,7 @@
   <div class="container">
     <goods-header title="编辑任务">
       <template #right>
-        <Button type="primary" class="mr16" @click="saveActivity">保存</Button>
+        <Button type="primary" class="mr16" @click="updateMFActivityTask">保存</Button>
         <Button @click="back">返回</Button>
       </template>
     </goods-header>
@@ -204,233 +204,277 @@
 </template>
 
 <script>
-import {
-  updateMFActivityTask,
-  updateRule,
-  editAdvert,
-  getMFActivityTaskDetail,
-} from "@/api/freeGoods";
-import Header from "./../com/Header";
-import UploadFile from "./../com/UploadFile";
-import { quillEditor } from "vue-quill-editor";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-const ruleTyps = {
-  1: "为选手投票",
-  2: "邀请用户",
-  3: "既邀请用户且用户需投票",
-};
-const advertAreaIdTypes = {
-  5: "投票闪频广告",
-  6: "选手继续投票页弹框广告",
-  7: "分享链接",
-};
-export default {
-  name: "addedit",
-  data() {
-    return {
-      goodsInfo: {},
-      editorOption: {
-        height: 600,
-      },
-      baseInfo: {
-        activityTaskId: "", // 活动任务id
-        goodsNum: 0, // 数量
-        taskBeginDt: "", // 任务开始时间
-        taskEndDt: "", //任务结束时间
-      },
-      ruleInfo: {
-        ruleDefId: 0, // 规则类型 1：为选手投票，2：邀请用户，3：既邀请用户且用户需投票
-        ruleId: "", // 规则id
-        activityTaskId: "", // 活动任务
-        ruleName: "", // 规则名称
-        eachNum: "", // 人数
-        voteNum: "", // 票数
-        activityRule: "", // 是否为活动规则
-      },
-
-      advertInfo: { 
-        5: {
-          // 广告信息
-          activityTaskId: "", // 活动任务id
-          advertAreaId: 5, // 广告类型
-          advertId: "",
-          fileId: "", // 广告图片
-          linkUrl: "", // 广告链接
-        },
-        6: {
-          // 广告信息
-          activityTaskId: "", // 活动任务id
-          advertAreaId: 6, // 广告类型
-          fileId: "", // 广告图片id
-          advertTitle: "", // 广告标题
-          advertDesc: "", // 广告内容
-          advertId: "", // 广告id
-        },
-        7: {
-          // 广告信息
-          activityTaskId: "", // 活动任务id
-          advertAreaId: 7, // 广告类型
-          fileId: "", // 广告图片id
-          linkUrl: "", // 广告链接
-        },
-      },
-      advertisingSettingsModal: {
-        // 广告设置弹窗
-        show: false,
-        state: 5,
-        item: -10
-      },
+    import {
+        updateMFActivityTask,
+        updateRule,
+        editAdvert,
+        getMFActivityTaskDetail
+    } from "@/api/freeGoods";
+    import Header from "./../com/Header";
+    import UploadFile from "./../com/UploadFile";
+    import { quillEditor } from "vue-quill-editor";
+    import "quill/dist/quill.core.css";
+    import "quill/dist/quill.snow.css";
+    import "quill/dist/quill.bubble.css";
+    import dayjs from 'dayjs';
+    const ruleTyps = {
+        1: "为选手投票",
+        2: "邀请用户",
+        3: "既邀请用户且用户需投票"
     };
-  },
-  components: {
-    "quill-editor": quillEditor,
-    "goods-header": Header,
-    uploadFile: UploadFile,
-  },
-  mounted() {
-    this.getMFActivityTaskDetail();
-  },
-  methods: {
-    changeRule(){
-      this.ruleInfo.eachNum = ''
-      this.ruleInfo.voteNum = ''
-      this.ruleInfo.ruleName = ''
-    },
-    async updateMFActivityTask() {
-      // 保存基础信息
-      const res = await updateMFActivityTask(this.baseInfo);
-      if (res.code === 0) {
-        this.$Message.success("基础信息保存成功");
-      } else {
-        this.$Message.error(res.data.message || res.msg || "基础信息保存失败");
-      }
-    },
-    async updateRule() {
-      // 规则信息保存
-      const res = await updateRule(this.ruleInfo);
-      if (res.code === 0) {
-        this.$Message.success("规则信息保存成功");
-      } else {
-        this.$Message.error(res.data.message || res.msg || "规则信息保存失败");
-      }
-    },
-    async editAdvert() {
-      const res = editAdvert(this.advertInfo);
-      if (res.code === 0) {
-        this.$Message.success("广告信息保存成功");
-      } else {
-        this.$Message.error(res.data.message || res.msg || "广告信息保存失败");
-      }
-    },
-    saveActivity() {
-      // 保存
-      Promise.all([this.updateMFActivityTask, this.updateRule, this.editAdvert])
-        .then((res) => {
-          this.$Message.success("编辑成功");
-          setTimeout(() => {
-            this.back();
-          }, 1500);
-        })
-        .catch(() => {
-          this.$Message.error("编辑失败");
-        });
-    },
-    async getMFActivityTaskDetail() {
-      // 获取任务详情
-      const res = await getMFActivityTaskDetail({
-        activityTaskId: this.$route.query.activityTaskId,
-      });
-      if (res.code === 0 && res.data) {
-        this.goodsInfo = res.data;
-        const {
-          taskBeginDt,
-          activityTaskId,
-          activityTaskStateId,
-          activityTaskStateName,
-          goodsNum,
-          taskEndDt,
-          goodsName,
-          sku,
-          activityId,
-          ruleDetail,
-          advertDetail,
-          dbState,
-          dbStateDt,
-          createPartyId,
-          goodsId,
-          receiveGoodsNum,
-          skuId,
-          surplusGoodsNum
-        } = res.data;
-        // 基础信息
-        this.baseInfo.activityId = activityId
-        this.baseInfo.goodsName = goodsName
-        this.baseInfo.activityTaskStateName = activityTaskStateName
-        this.baseInfo.activityTaskStateId = activityTaskStateId
-        this.baseInfo.createPartyId = createPartyId
-        this.baseInfo.dbState = dbState
-        this.baseInfo.sku = sku
-        this.baseInfo.goodsId = goodsId
-        this.baseInfo.dbStateDt = dbStateDt
-        this.baseInfo.taskBeginDt = taskBeginDt;
-        this.baseInfo.activityTaskId = activityTaskId;
-        this.baseInfo.goodsNum = goodsNum;
-        this.baseInfo.taskEndDt = taskEndDt;
-        this.baseInfo.skuId = skuId
-        this.baseInfo.receiveGoodsNum = receiveGoodsNum
-        this.baseInfo.surplusGoodsNum = surplusGoodsNum
-        // 规则设置信息
-        if (ruleDetail && ruleDetail.length > 0) {
-          // ruleInfo
-          const ruleItem = ruleDetail.filter((item) => item.ruleDefId !== 4);
-          console.log('ruleItem:', ruleItem)
-          if (ruleItem && ruleItem.length > 0) {
-            const { ruleId, voteNum, eachNum, ruleDefId, activityRule, ruleEngineTypeId, ruleEngineTypeName } = ruleItem[0];
-            this.ruleInfo.ruleEngineTypeId = ruleEngineTypeId
-            this.ruleInfo.ruleEngineTypeName = ruleEngineTypeName
-            this.ruleInfo.ruleId = ruleId;
-            //  票数
-            this.ruleInfo.voteNum = voteNum;
-            // 人数
-            this.ruleInfo.eachNum = eachNum;
-            this.ruleInfo.ruleDefId = ruleDefId;
-            this.ruleInfo.activityRule = activityRule
-            this.ruleInfo.activityTaskId = activityTaskId;
-          }
-        }
+    const advertAreaIdTypes = {
+        5: "投票闪频广告",
+        6: "选手继续投票页弹框广告",
+        7: "分享链接"
+    };
+    export default {
+        name: "addedit",
+        data () {
+            return {
+                goodsInfo: {},
+                editorOption: {
+                    height: 600
+                },
+                baseInfo: {
+                    activityTaskId: "", // 活动任务id
+                    goodsNum: 0, // 数量
+                    taskBeginDt: "", // 任务开始时间
+                    taskEndDt: "" // 任务结束时间
+                },
+                ruleInfo: {
+                    ruleDefId: 0, // 规则类型 1：为选手投票，2：邀请用户，3：既邀请用户且用户需投票
+                    ruleId: "", // 规则id
+                    activityTaskId: "", // 活动任务
+                    ruleName: "", // 规则名称
+                    eachNum: "", // 人数
+                    voteNum: "", // 票数
+                    activityRule: "" // 是否为活动规则
+                },
 
-        // 广告设置
-        if (advertDetail && advertDetail.length > 0) {
-          for(let i=0; i<advertDetail.length; i++) {
-            const {advertDesc,advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId,objectId, objectTypeId} = advertDetail[i]
-            const newobj = {
-              advertDesc,advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId,objectId, objectTypeId
+                advertInfo: {
+                    5: {
+                        // 广告信息
+                        activityTaskId: "", // 活动任务id
+                        advertAreaId: 5, // 广告类型
+                        advertId: "",
+                        fileId: "", // 广告图片
+                        linkUrl: "" // 广告链接
+                    },
+                    6: {
+                        // 广告信息
+                        activityTaskId: "", // 活动任务id
+                        advertAreaId: 6, // 广告类型
+                        fileId: "", // 广告图片id
+                        advertTitle: "", // 广告标题
+                        advertDesc: "", // 广告内容
+                        advertId: "" // 广告id
+                    },
+                    7: {
+                        // 广告信息
+                        activityTaskId: "", // 活动任务id
+                        advertAreaId: 7, // 广告类型
+                        fileId: "", // 广告图片id
+                        linkUrl: "" // 广告链接
+                    }
+                },
+                advertisingSettingsModal: {
+                    // 广告设置弹窗
+                    show: false,
+                    state: 5,
+                    item: -10
+                }
+            };
+        },
+        components: {
+            "quill-editor": quillEditor,
+            "goods-header": Header,
+            uploadFile: UploadFile
+        },
+        mounted () {
+            this.getMFActivityTaskDetail();
+        },
+        methods: {
+            changeRule () {
+                this.ruleInfo.eachNum = ''
+                this.ruleInfo.voteNum = ''
+                this.ruleInfo.ruleName = ''
+            },
+            async updateMFActivityTask () {
+                // 保存基础信息
+                console.log(this.baseInfo, this.ruleInfo, this.advertInfo)
+                const { activityTaskId, goodsNum, taskBeginDt, taskEndDt } = this.baseInfo
+                const query = {
+                    activityTaskId,
+                    goodsNum,
+                    taskBeginDt,
+                    taskEndDt,
+                    adverts: [],
+                    rules: []
+                }
+                const newRule = JSON.parse(JSON.stringify(this.ruleInfo))
+                newRule.ruleName = ruleTyps[newRule.ruleDefId]
+                query.rules = [this.ruleInfo]
+                const arr = []
+                for (let key in this.advertInfo) {
+                    arr.push(this.advertInfo[key])
+                }
+                query.adverts = [...arr]
+                if (!taskBeginDt || !taskEndDt) {
+                    this.$Message.error("请选择活动时间")
+                    return
+                }
+                if (!goodsNum > 0) {
+                    this.$Message.error("请输入数量")
+                    return
+                }
+                if (typeof query.taskBeginDt === 'object') {
+                    query.taskBeginDt = dayjs(query.taskBeginDt).format('YYYY-MM-DD HH:mm:ss')
+                }
+                if (typeof query.taskEndDt === 'object') {
+                    query.taskEndDt = dayjs(query.taskEndDt).format('YYYY-MM-DD HH:mm:ss')
+                }
+                const newQuery = new FormData()
+                for (let key in query) {
+                    if (typeof query[key] === 'object') {
+                        newQuery.append(key, JSON.stringify(query[key]))
+                    } else {
+                        newQuery.append(key, query[key])
+                    }
+                }
+                const res = await updateMFActivityTask(newQuery);
+                if (res.code === 0) {
+                    this.$Message.success("编辑成功");
+                    setTimeout(() => {
+                        this.$router.go(-1)
+                    }, 800)
+                } else {
+                    this.$Message.error(res.data.message || res.msg || "编辑失败");
+                }
+            },
+            async updateRule () {
+                // 规则信息保存
+                const res = await updateRule(this.ruleInfo);
+                if (res.code === 0) {
+                    this.$Message.success("规则信息保存成功");
+                } else {
+                    this.$Message.error(res.data.message || res.msg || "规则信息保存失败");
+                }
+            },
+            async editAdvert () {
+                const res = editAdvert(this.advertInfo);
+                if (res.code === 0) {
+                    this.$Message.success("广告信息保存成功");
+                } else {
+                    this.$Message.error(res.data.message || res.msg || "广告信息保存失败");
+                }
+            },
+            saveActivity () {
+                // 保存
+                Promise.all([this.updateMFActivityTask, this.updateRule, this.editAdvert])
+                    .then((res) => {
+                        this.$Message.success("编辑成功");
+                        setTimeout(() => {
+                            this.back();
+                        }, 1500);
+                    })
+                    .catch(() => {
+                        this.$Message.error("编辑失败");
+                });
+            },
+            async getMFActivityTaskDetail () {
+                // 获取任务详情
+                const res = await getMFActivityTaskDetail({
+                    activityTaskId: this.$route.query.activityTaskId
+                });
+                if (res.code === 0 && res.data) {
+                    this.goodsInfo = res.data;
+                    const {
+                        taskBeginDt,
+                        activityTaskId,
+                        activityTaskStateId,
+                        activityTaskStateName,
+                        goodsNum,
+                        taskEndDt,
+                        goodsName,
+                        sku,
+                        activityId,
+                        ruleDetail,
+                        advertDetail,
+                        dbState,
+                        dbStateDt,
+                        createPartyId,
+                        goodsId,
+                        receiveGoodsNum,
+                        skuId,
+                        surplusGoodsNum
+                    } = res.data;
+                    // 基础信息
+                    this.baseInfo.activityId = activityId
+                    this.baseInfo.goodsName = goodsName
+                    this.baseInfo.activityTaskStateName = activityTaskStateName
+                    this.baseInfo.activityTaskStateId = activityTaskStateId
+                    this.baseInfo.createPartyId = createPartyId
+                    this.baseInfo.dbState = dbState
+                    this.baseInfo.sku = sku
+                    this.baseInfo.goodsId = goodsId
+                    this.baseInfo.dbStateDt = dbStateDt
+                    this.baseInfo.taskBeginDt = taskBeginDt;
+                    this.baseInfo.activityTaskId = activityTaskId;
+                    this.baseInfo.goodsNum = goodsNum;
+                    this.baseInfo.taskEndDt = taskEndDt;
+                    this.baseInfo.skuId = skuId
+                    this.baseInfo.receiveGoodsNum = receiveGoodsNum
+                    this.baseInfo.surplusGoodsNum = surplusGoodsNum
+                    // 规则设置信息
+                    if (ruleDetail && ruleDetail.length > 0) {
+                        // ruleInfo
+                        const ruleItem = ruleDetail.filter((item) => item.ruleDefId !== 4);
+                        console.log('ruleItem:', ruleItem)
+                        if (ruleItem && ruleItem.length > 0) {
+                            const { ruleId, voteNum, eachNum, ruleDefId, activityRule, ruleEngineTypeId, ruleEngineTypeName } = ruleItem[0];
+                            this.ruleInfo.ruleEngineTypeId = ruleEngineTypeId
+                            this.ruleInfo.ruleEngineTypeName = ruleEngineTypeName
+                            this.ruleInfo.ruleId = ruleId;
+                            //  票数
+                            this.ruleInfo.voteNum = voteNum;
+                            // 人数
+                            this.ruleInfo.eachNum = eachNum;
+                            this.ruleInfo.ruleDefId = ruleDefId;
+                            this.ruleInfo.activityRule = activityRule
+                            this.ruleInfo.activityTaskId = activityTaskId;
+                        }
+                    }
+
+                    // 广告设置
+                    if (advertDetail && advertDetail.length > 0) {
+                        for (let i = 0; i < advertDetail.length; i++) {
+                            const { advertDesc, advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId, objectId, objectTypeId } = advertDetail[i]
+                            const newobj = {
+                                advertDesc, advertId, advertStateId, advertTitle, createPartyId, dbState, dbStateDt, fileId, fileName, fileUrl, linkUrl, logoPictureId, objectId, objectTypeId
+                            }
+                            this.advertInfo[advertDetail[i].advertAreaId] = Object.assign({}, this.advertInfo[advertDetail[i].advertAreaId], newobj)
+                        }
+                    }
+                }
+                console.log("res:", res);
+            },
+            changeFile (index) {
+                this.advertisingSettingsModal.item = index
+            },
+            uploadSuccess (file) {
+                const { fileId, fileUrl } = file
+                this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
+                this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
+                // 图片上传成功
+                // 判断广告类型
+            },
+
+            back () {
+                // 返回
+                this.$router.go(-1);
             }
-            this.advertInfo[advertDetail[i].advertAreaId] = Object.assign({},this.advertInfo[advertDetail[i].advertAreaId], newobj)
-          }
         }
-      }
-      console.log("res:", res);
-    },
-    changeFile(index) {
-       this.advertisingSettingsModal.item = index
-    },
-    uploadSuccess(file) {
-      const {fileId,fileUrl } = file
-      this.advertInfo[this.advertisingSettingsModal.item].fileId = fileId
-      this.advertInfo[this.advertisingSettingsModal.item].fileUrl = fileUrl
-      // 图片上传成功
-      // 判断广告类型
-    },
-
-    back() {
-      // 返回
-      this.$router.go(-1);
-    },
-  },
-};
+    };
 </script>
 
 <style lang="less" scoped>
